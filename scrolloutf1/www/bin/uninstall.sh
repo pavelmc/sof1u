@@ -4,6 +4,13 @@
 # AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
 #####################################################
 
+##################################################################################
+# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with Ubuntu 16.04.x LTS #
+# Main changes are issues with (so far)
+#  - PHP5 not being available on Ubuntu xenial: using PHP7
+#  -
+##################################################################################
+
 function f_uninstall(){
 
 sudo apt-get update || apt-get install sudo -y
@@ -77,7 +84,9 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge amavisd-new -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge clamav-daemon -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge apache2 -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge mailgraph -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge php5 -y
+# update for Ubuntu Xenial
+#sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge php5 -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge php -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge postfix -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge postgrey -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge smbfs -y
@@ -151,8 +160,8 @@ All packages and configuration files, used by Scrollout F1, will be removed!\n\
 ARE YOU SURE YOU WANT TO CONTINUE?\n\
 -------------------------------------------------------------------------------------------\n"
 select yn in "Yes" "No"; do
-	case $yn in
-		Yes ) f_uninstall && exit 0;;
-		No ) exit;;
-	esac
+        case $yn in
+                Yes ) f_uninstall && exit 0;;
+                No ) exit;;
+        esac
 done

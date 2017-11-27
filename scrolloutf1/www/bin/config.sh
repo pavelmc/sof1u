@@ -4,6 +4,13 @@
 # AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
 #####################################################
 
+##################################################################################
+# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with Ubuntu 16.04.x LTS #
+# Main changes are issues with (so far)
+#  - PHP5 not being available on Ubuntu xenial: using PHP7
+#  -
+##################################################################################
+
 
 empty=
 test -d /tmp/scrollout || mkdir /tmp/scrollout;
@@ -117,8 +124,8 @@ cidr=$geo/cidr;
 clientcidr=/etc/postfix/client.cidr;
 test -f /etc/postfix/client.cidr || touch /etc/postfix/client.cidr;
 test -f /etc/postfix/esmtp_access || \
-printf "0.0.0.0/0		   silent-discard, dsn\n\
-::/0				silent-discard, dsn\n" > /etc/postfix/esmtp_access
+printf "0.0.0.0/0                  silent-discard, dsn\n\
+::/0                            silent-discard, dsn\n" > /etc/postfix/esmtp_access
 
 release=`grep -m1 "^[0-9]\{4\}\-[0-9]\{1,2\}\-[0-9]\{1,2\}$" /var/www/ver`;
 release2=`grep -m1 "^[0-9]\{4\}\-[0-9]\{1,2\}\-[0-9]\{1,2\}$" /var/www/version`;
@@ -181,12 +188,19 @@ body_code=$mailbox;
 report_spam=$mailbox;
 report_virus=$mailbox;
 
-sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
-sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
-sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
-sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
-sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
-sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
+# updated for Ubuntu Xenial
+#~ sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
+sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
 
 mynetworks=`echo "${transport[*]}" | sed "s/  *$//g" |  sed "s/\:[0-9]*//g" | sed -e "s/\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\)\] \{0,1\}/\1\/32 /g" | sed -e "s/\[//g" | sed -e "s/ $//g" | sed 's/  \|,/ /g' | tr ' ' '\n' | grep -vi "[a-z]" | sort -u | tr '\n' ' '`
 
@@ -223,17 +237,17 @@ bucket=$(printf "$satrap\n$mailbox\n" | sed "s/\([[:punct:]]\)/\\\\\\\\\1/g" | s
 
 . $tld_scores;
 
-		if [ $Connection_filter -le 2 ]
-		then
-		printf "\n### blacklist_from hosted domains ###\n" >> $tmp/st.tmp
-		lend=${#domain[*]}
-		d=0;
-		while [ $d -lt $lend ];
-		do
-		printf "blacklist_from\t*@${domain[$d]}\n"
-		let d++
-		done | sort -u >> $tmp/st.tmp
-		fi
+                if [ $Connection_filter -le 2 ]
+                then
+                printf "\n### blacklist_from hosted domains ###\n" >> $tmp/st.tmp
+                lend=${#domain[*]}
+                d=0;
+                while [ $d -lt $lend ];
+                do
+                printf "blacklist_from\t*@${domain[$d]}\n"
+                let d++
+                done | sort -u >> $tmp/st.tmp
+                fi
 
 if ! [[ -z "${spamtraps[*]}" ]]
 then
@@ -242,7 +256,7 @@ printf "\n$strap\n" >> $tmp/st.tmp
 # printf "### blacklist_to spam traps ###\n" >> $tmp/st.tmp
 # echo "$satrap" | parallel --gnu 'printf "blacklist_to\t{}\n"' | sort -u >> $tmp/st.tmp
 else
-	printf "### No spam traps defined ###\n" >> $tmp/st.tmp;
+        printf "### No spam traps defined ###\n" >> $tmp/st.tmp;
 fi
 
 mv $tmp/st.tmp $sp_library/10_traps.cf;

@@ -4,6 +4,12 @@
 # AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
 #####################################################
 
+##################################################################################
+# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with Ubuntu 16.04.x LTS #
+# Main changes are issues with (so far)
+#  - PHP5 not being available on Ubuntu xenial: using PHP7
+#  -
+##################################################################################
 
 
 CONFIG=/var/www/bin/config.sh
@@ -40,7 +46,9 @@ done | parallel --gnu "service {} restart" > /dev/null 2>&1
 kill -9 `lsof -t -u amavis`
 /etc/init.d/amavis start
 
-for service in bind9 dovecot postfix php5-fpm incron cron rbldnsd nginx; do
+# update for Ubuntu Xenial
+#for service in bind9 dovecot postfix php5-fpm incron cron rbldnsd nginx; do
+for service in bind9 dovecot postfix php-fpm incron cron rbldnsd nginx; do
 echo "$service"
 done | parallel --gnu "service {} reload || service {} restart" > /dev/null 2>&1
 

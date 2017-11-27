@@ -5,6 +5,13 @@
 # AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
 #####################################################
 
+##################################################################################
+# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with Ubuntu 16.04.x LTS #
+# Main changes are issues with (so far)
+#  - PHP5 not being available on Ubuntu xenial: using PHP7
+#  -
+##################################################################################
+
 
 # DO NOT MODIFY THIS CONFIGURATION FILE IN AN ATTEMPT TO INSTALL ON AN EXISTING SYSTEM.
 # ATTEMPTING TO INSTALL SCROLLOUT ON AN EMAIL SERVER OR WEB SERVER WILL DISTROY YOUR CONFIGURATION FILES.
@@ -18,7 +25,7 @@ function f_install(){
 
 for package in postfix amavisd-new spamassassin nginx;
 do
-	sudo dpkg -s $package 2>&1 | grep "ok installed" >/dev/null && printf "[ $package ] is installed.\nThis is not a fresh Operating System. You cannot have multiple instances of $package. I'll distroy your configuration. Stop trying.\nINSTALL SCROLLOUT ON A FRESH OPERATING SYSTEM ONLY. Aborting ... \n" && exit;
+        sudo dpkg -s $package 2>&1 | grep "ok installed" >/dev/null && printf "[ $package ] is installed.\nThis is not a fresh Operating System. You cannot have multiple instances of $package. I'll distroy your configuration. Stop trying.\nINSTALL SCROLLOUT ON A FRESH OPERATING SYSTEM ONLY. Aborting ... \n" && exit;
 done
 
 sudo apt-get install apt-transport-https -y --force-yes
@@ -126,7 +133,9 @@ sudo pip install redis
 sudo apt-get install bind9 -y
 sudo apt-get install quagga -y
 sudo apt-get install parallel -y
-sudo apt-get install php5-fpm -y
+# update for ubuntu xenial
+#sudo apt-get install php5-fpm -y
+sudo apt-get install php-fpm -y
 sudo apt-get install host -y
 sudo apt-get install telnet -y
 sudo apt-get install pflogsumm -y
@@ -162,7 +171,9 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install nginx -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install nginx-extras -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install mailgraph -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install ntpdate -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install php5 -y
+# Changes for Ubuntu Xenial
+#sudo DEBIAN_FRONTEND=noninteractive apt-get install php5 -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install php -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install postfix -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install smbfs -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install cifs-utils -y
@@ -318,21 +329,28 @@ test -L /etc/nginx/sites-enabled/scrollout.conf || ln -s /etc/nginx/sites-availa
 # jitsi-meet              jitsi-meet/cert-choice          select Self-signed certificate will be generated
 # jitsi-meet              jitsi-meet/jvb-serve            boolean false
 # jitsi-meet              jitsi-meet/jvb-hostname         string $(hostname -f)
-# jigasi					jigasi/sip-password				password $(openssl rand -base64 20 | fold -w10 | head -n1)
-# jigasi					jigasi/sip-account				string	number@sip.provider
+# jigasi                                        jigasi/sip-password                             password $(openssl rand -base64 20 | fold -w10 | head -n1)
+# jigasi                                        jigasi/sip-account                              string  number@sip.provider
 
 # END
 
 # sudo apt-get install jitsi-meet jigasi -qy
 
 let disksize=`df | awk '/\/$/ {print $2}' | head -1`/1024/4;
-sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
-sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
-sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
-sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
-sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
-sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
 sed -i -e "s/.*auth_worker_max_count = .*/auth_worker_max_count = 300/" /etc/dovecot/conf.d/10-auth.conf;
+# updates for Ubuntu Xenial
+#~ sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
+sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
 cp /var/www/cfg/incrontab /var/spool/incron/root
 cp /var/www/cfg/geo/URICountry.pm /usr/share/perl5/Mail/SpamAssassin/Plugin
 cp /var/www/cfg/quagga_daemons.conf /etc/quagga/daemons
@@ -356,21 +374,21 @@ printf "User_Alias WWW = www-data\nCmnd_Alias SO = /sbin/ip, /usr/bin/awk, /sbin
 chmod 0440 /etc/sudoers;
 
 if grep -q "Debian GNU/Linux 7" /etc/issue; then
-	test -f /etc/apt/sources.list.d/wheezy-backports.list || echo 'deb http://http.debian.net/debian wheezy-backports main' > /etc/apt/sources.list.d/wheezy-backports.list
-	apt-get update
-	sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t wheezy-backports
+        test -f /etc/apt/sources.list.d/wheezy-backports.list || echo 'deb http://http.debian.net/debian wheezy-backports main' > /etc/apt/sources.list.d/wheezy-backports.list
+        apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t wheezy-backports
 fi
 
 if grep -q "Debian GNU/Linux 8" /etc/issue; then
-	test -f /etc/apt/sources.list.d/jessie-backports.list || echo 'deb http://http.debian.net/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
-	apt-get update
-	sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t jessie-backports
+        test -f /etc/apt/sources.list.d/jessie-backports.list || echo 'deb http://http.debian.net/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
+        apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t jessie-backports
 fi
 
 if grep -q "Debian GNU/Linux 9" /etc/issue; then
-	test -f /etc/apt/sources.list.d/stretch-backports.list || echo 'deb http://http.debian.net/debian stretch-backports main' > /etc/apt/sources.list.d/stretch-backports.list
-	apt-get update
-	sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t stretch-backports
+        test -f /etc/apt/sources.list.d/stretch-backports.list || echo 'deb http://http.debian.net/debian stretch-backports main' > /etc/apt/sources.list.d/stretch-backports.list
+        apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t stretch-backports
 fi
 
 postconf -d | grep "^mail_version = 2.[8-9].[0-9]$" && apt-get autoremove postgrey -y
@@ -414,7 +432,7 @@ amavisu=`id -u amavis`
 amavisg=`id -g amavis`
 
 # memory=`free -m | grep "^Mem" | awk -F " " '{print $4}'`
-# [ $memory -ge 1536 ] && (let mem=$memory/2; grep "/var/lib/amavis/tmp" /etc/fstab || echo "/dev/shm		/var/lib/amavis/tmp tmpfs defaults,noexec,nodev,nosuid,size="$mem"m,mode=750,uid=$amavisu,gid=$amavisg 0 0" >> /etc/fstab)
+# [ $memory -ge 1536 ] && (let mem=$memory/2; grep "/var/lib/amavis/tmp" /etc/fstab || echo "/dev/shm           /var/lib/amavis/tmp tmpfs defaults,noexec,nodev,nosuid,size="$mem"m,mode=750,uid=$amavisu,gid=$amavisg 0 0" >> /etc/fstab)
 
 grep "swapfile.img swap" /etc/fstab > /dev/null || (
 dd if=/dev/zero of=/swapfile.img bs=1024 count=1M
@@ -424,7 +442,9 @@ echo "/swapfile.img swap swap sw 0 0" >> /etc/fstab
 )
 
 /etc/init.d/nginx restart
-/etc/init.d/php5-fpm restart
+# update for Ubuntu Xenial
+#/etc/init.d/php5-fpm restart
+/etc/init.d/php7.0-fpm restart
 # /etc/init.d/postgrey stop
 # rm /var/lib/postgrey/postgrey.lock
 # /etc/init.d/postgrey start
@@ -448,8 +468,8 @@ In case you have an web or email server installed on this computer DO NOT CONTIN
 Make sure this computer is an Ubuntu or Debian fresh install. Do you wish to continue?\n\
 -------------------------------------------------------------------------------------------\n"
 select yn in "Yes" "No"; do
-	case $yn in
-		Yes ) f_install && exit 0;;
-		No ) exit;;
-	esac
+        case $yn in
+                Yes ) f_install && exit 0;;
+                No ) exit;;
+        esac
 done

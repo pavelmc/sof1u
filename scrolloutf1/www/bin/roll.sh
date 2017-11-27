@@ -1,5 +1,12 @@
 # Deploy
 
+##################################################################################
+# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with Ubuntu 16.04.x LTS #
+# Main changes are issues with (so far)
+#  - PHP5 not being available on Ubuntu xenial: using PHP7
+#  -
+##################################################################################
+
 target=/tmp/scrollout
 
 . /var/www/bin/config.sh
@@ -27,21 +34,21 @@ done
 rm -f $(grep -l jitsi /etc/nginx/sites-enabled/*.conf) > /dev/null 2>&1
 
 if grep -q "Debian GNU/Linux 7" /etc/issue; then
-	test -f /etc/apt/sources.list.d/wheezy-backports.list || echo 'deb http://http.debian.net/debian wheezy-backports main' > /etc/apt/sources.list.d/wheezy-backports.list
-	apt-get update
-	sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t wheezy-backports
+        test -f /etc/apt/sources.list.d/wheezy-backports.list || echo 'deb http://http.debian.net/debian wheezy-backports main' > /etc/apt/sources.list.d/wheezy-backports.list
+        apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t wheezy-backports
 fi
 
 if grep -q "Debian GNU/Linux 8" /etc/issue; then
-	test -f /etc/apt/sources.list.d/jessie-backports.list || echo 'deb http://http.debian.net/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
-	apt-get update
-	sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t jessie-backports
+        test -f /etc/apt/sources.list.d/jessie-backports.list || echo 'deb http://http.debian.net/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
+        apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t jessie-backports
 fi
 
 if grep -q "Debian GNU/Linux 9" /etc/issue; then
-	test -f /etc/apt/sources.list.d/stretch-backports.list || echo 'deb http://http.debian.net/debian stretch-backports main' > /etc/apt/sources.list.d/stretch-backports.list
-	apt-get update
-	sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t stretch-backports
+        test -f /etc/apt/sources.list.d/stretch-backports.list || echo 'deb http://http.debian.net/debian stretch-backports main' > /etc/apt/sources.list.d/stretch-backports.list
+        apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t stretch-backports
 fi
 
 postconf -d | grep "^mail_version = 2.[8-9].[0-9]$" && apt-get autoremove postgrey -y
@@ -289,7 +296,9 @@ sudo apt-get autoremove pdns-recursor -qy
 sudo apt-get install bind9 -y
 sudo apt-get install quagga -y
 sudo apt-get install parallel -y
-sudo apt-get install php5-fpm -y
+# update for Ubuntu Xenial
+#sudo apt-get install php5-fpm -y
+sudo apt-get install php-fpm -y
 sudo apt-get install host -y
 sudo apt-get install telnet -y
 sudo apt-get install pyzor -y
@@ -427,21 +436,28 @@ test -L /etc/nginx/sites-enabled/scrollout.conf || ln -s /etc/nginx/sites-availa
 # jitsi-meet              jitsi-meet/cert-choice          select Self-signed certificate will be generated
 # jitsi-meet              jitsi-meet/jvb-serve            boolean false
 # jitsi-meet              jitsi-meet/jvb-hostname         string $(hostname -f)
-# jigasi					jigasi/sip-password				password $(openssl rand -base64 20 | fold -w10 | head -n1)
-# jigasi					jigasi/sip-account				string	number@sip.provider
+# jigasi                                        jigasi/sip-password                             password $(openssl rand -base64 20 | fold -w10 | head -n1)
+# jigasi                                        jigasi/sip-account                              string  number@sip.provider
 
 # END
 
 # sudo apt-get install jitsi-meet jigasi -qy && . /var/www/bin/jitsi-meet.sh
 
 let disksize=`df | awk '/\/$/ {print $2}' | head -1`/1024/4;
-sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
-sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
-sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
-sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
-sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
-sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
 sed -i -e "s/.*auth_worker_max_count = .*/auth_worker_max_count = 300/" /etc/dovecot/conf.d/10-auth.conf;
+# updated for Ubuntu Xenial
+#~ sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
+#~ sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
+sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
+sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
 test -f /etc/postfix/bcc_maps && postmap /etc/postfix/bcc_maps;
 test -f /etc/postfix/recipients && postmap /etc/postfix/recipients;
 test -f /etc/postfix/relay_recipients && postmap /etc/postfix/relay_recipients;
@@ -456,7 +472,7 @@ amavisg=`id -g amavis`
 
 
 # memory=`free -m | grep "^Mem" | awk -F " " '{print $4}'`
-# [ $memory -ge 1536 ] && (let mem=$memory/2; grep "/var/lib/amavis/tmp" /etc/fstab || echo "/dev/shm		/var/lib/amavis/tmp tmpfs defaults,noexec,nodev,nosuid,size="$mem"m,mode=750,uid=$amavisu,gid=$amavisg 0 0" >> /etc/fstab && reboot)
+# [ $memory -ge 1536 ] && (let mem=$memory/2; grep "/var/lib/amavis/tmp" /etc/fstab || echo "/dev/shm           /var/lib/amavis/tmp tmpfs defaults,noexec,nodev,nosuid,size="$mem"m,mode=750,uid=$amavisu,gid=$amavisg 0 0" >> /etc/fstab && reboot)
 # ([ $memory -le 512 ] && grep "/var/lib/amavis/tmp" /etc/fstab) && (grep -v "/var/lib/amavis/tmp" /etc/fstab > /tmp/fstab && mv /tmp/fstab /etc/fstab && reboot)
 
 grep "swapfile.img swap" /etc/fstab > /dev/null || (
@@ -477,7 +493,9 @@ find /var/lib/amavis/.spamassassin/ -type f -name "*{seen,toks,lock}*" -delete
 /var/www/bin/reset_iptables.sh
 /var/www/bin/pwd.sh create
 
-for service in nginx rsyslog redis-server quagga postsrsd unattended-upgrades php5-fpm incron cron; do
+# update for Ubuntu Xenial
+#for service in nginx rsyslog redis-server quagga postsrsd unattended-upgrades php5-fpm incron cron; do
+for service in nginx rsyslog redis-server quagga postsrsd unattended-upgrades php-fpm incron cron; do
 echo "$service"
 done | parallel --gnu "service {} restart"
 
@@ -486,4 +504,3 @@ done | parallel --gnu "service {} restart"
 test "$newver" != "$empty" && echo "$newver" > $curver;
 
 echo "Update done."
-
