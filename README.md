@@ -22,7 +22,7 @@ Roadmap
 Installation
 ============
 
-Follow the (usual procedures)[http://www.scrolloutf1.com/deploy/install] described on the official web site.
+Follow the [usual procedures](http://www.scrolloutf1.com/deploy/install) described on the official web site.
 
 
 Author
@@ -30,7 +30,7 @@ Author
 
 I'm Pavel Milanes a FLOSS lover, I live in Cuba where a masive migration to FLOSS are taking place system by system, all that by dedicated sysadmins who spend precious hours of his time to make thinks work and work fine.
 
-This is my contribution for them, you can reach us by email or (telegram)[https://t.me/sysadmincuba], also we have place on the net: (SysAdminsdeCuba)[https://www.sysadminsdecuba.com]
+This is my contribution for them, you can reach us by email or [telegram](https://t.me/sysadmincuba), also we have place on the net: [SysAdminsdeCuba](https://www.sysadminsdecuba.com)
 
 Want to say thanks?
 ===================
