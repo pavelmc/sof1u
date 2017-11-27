@@ -1,0 +1,34 @@
+
+urifullnsrhssub	SO_PUB_URIBL_NS_SPAMTRAP	SPAMTRAP-uri-ns.rbl.scrolloutf1.com A 127.127.127.127
+body		SO_PUB_URIBL_NS_SPAMTRAP	eval:check_uridnsbl('SO_PUB_URIBL_NS_SPAMTRAP')
+describe	SO_PUB_URIBL_NS_SPAMTRAP	URL's ns address has been reported to SPAMTRAP-uri-ns.rbl.scrolloutf1.com
+tflags		SO_PUB_URIBL_NS_SPAMTRAP	net ns
+score		SO_PUB_URIBL_NS_SPAMTRAP	0 -0.001 0 -0.001
+
+urirhssub	SO_PUB_URIBL_DOMAIN_SPAMTRAP	SPAMTRAP-uri-domain.rbl.scrolloutf1.com A 127.127.127.127
+body		SO_PUB_URIBL_DOMAIN_SPAMTRAP	eval:check_uridnsbl('SO_PUB_URIBL_DOMAIN_SPAMTRAP')
+describe	SO_PUB_URIBL_DOMAIN_SPAMTRAP	URL's domain address has been reported to SPAMTRAP-uri-domain.rbl.scrolloutf1.com
+tflags		SO_PUB_URIBL_DOMAIN_SPAMTRAP	net 
+score		SO_PUB_URIBL_DOMAIN_SPAMTRAP	0 -0.001 0 -0.001
+
+uridnssub	SO_PUB_URIBL_IP_SPAMTRAP	SPAMTRAP-uri-ip.rbl.scrolloutf1.com A 127.127.127.127
+body		SO_PUB_URIBL_IP_SPAMTRAP	eval:check_uridnsbl('SO_PUB_URIBL_IP_SPAMTRAP')
+describe	SO_PUB_URIBL_IP_SPAMTRAP	URL's ip address has been reported to SPAMTRAP-uri-ip.rbl.scrolloutf1.com
+tflags		SO_PUB_URIBL_IP_SPAMTRAP	net a
+score		SO_PUB_URIBL_IP_SPAMTRAP	0 -0.001 0 -0.001
+
+header		__SO_PUB_SNDR_SPAMTRAP	eval:check_rbl('sof1-lastexternal', 'SPAMTRAP-sndr.rbl.scrolloutf1.com')
+header		SO_PUB_SNDR_SPAMTRAP	eval:check_rbl_sub('sof1-lastexternal', '^127\.127\.127\.127$')
+describe	SO_PUB_SNDR_SPAMTRAP	Sender's address has been reported to SPAMTRAP-sndr.rbl.scrolloutf1.com
+score		SO_PUB_SNDR_SPAMTRAP	0 -0.001 0 -0.001
+tflags		SO_PUB_SNDR_SPAMTRAP	net
+reuse		SO_PUB_SNDR_SPAMTRAP
+
+ifplugin Mail::SPAMTRAPAssassin::Plugin::AskDNS
+
+askdns          SO_PUB_SNDR_DOMAIN_DKIM_SPAMTRAP		_DKIMDOMAIN_.SPAMTRAP-dkim.rbl.scrolloutf1.com A 127.127.127.127
+describe        SO_PUB_SNDR_DOMAIN_DKIM_SPAMTRAP		Sender's domain DKIM is listed in SPAMTRAP-dkim.rbl.scrolloutf1.com
+tflags          SO_PUB_SNDR_DOMAIN_DKIM_SPAMTRAP		net
+score           SO_PUB_SNDR_DOMAIN_DKIM_SPAMTRAP		0 0.001 0 0.001
+
+endif

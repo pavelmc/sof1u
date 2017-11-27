@@ -1,0 +1,7 @@
+<b>Geo filter</b><br />
+A powerful and innovative geographic filtering for Sender IP, Server IP, URL IP and TLDs<br />
+Depending on the selected Countries (see SECURE > COUNTRIES) it will filter emails based on <br />
+<li> original sender IP</li>
+<li> server sender IP</li>
+<li> IP address of any URL in the body</li>
+<li> Top Level Domains (TLDs)</li>

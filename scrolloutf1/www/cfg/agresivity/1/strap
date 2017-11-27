@@ -1,0 +1,16 @@
+
+header          __SO_EMPTY_FROM         From =~ /<>/
+header          __SO_FROM_TRAP          From =~ /\@/
+header          __SO_SPAM_TRAP          ToCc =~ /\\b(?:xMAILBOXx)/i
+meta            SO_SPAM_TRAP            (__SO_FROM_TRAP && __SO_SPAM_TRAP && !__SO_EMPTY_FROM)
+describe        SO_SPAM_TRAP            TRAPPED
+score           SO_SPAM_TRAP            700.0
+priority        SO_SPAM_TRAP            -1500
+
+meta            SO_NOT_TRAP            ((!__SO_FROM_TRAP || __SO_EMPTY_FROM) && __SO_SPAM_TRAP)
+describe        SO_NOT_TRAP            NOT trapped
+tflags          SO_NOT_TRAP            nice noautolearn
+score           SO_NOT_TRAP            0.0
+
+
+

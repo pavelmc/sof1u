@@ -1,0 +1,10 @@
+    uricountry	URICOUNTRY_xTLDx	xTLDx
+    header	URICOUNTRY_xTLDx	eval:check_uricountry('URICOUNTRY_xTLDx')
+    describe	URICOUNTRY_xTLDx	Contains a URI HOSTED in xCOUNTRY_NAMEx - xMESSx
+    tflags	URICOUNTRY_xTLDx	net
+    score 	URICOUNTRY_xTLDx	xSCOREx
+
+    header	RELAYCOUNTRY_xTLDx	X-Relay-Countries =~ /xTLDx/
+    describe	RELAYCOUNTRY_xTLDx	Relayed through xCOUNTRY_NAMEx - xMESSx
+    score	RELAYCOUNTRY_xTLDx	xSCOREx
+

@@ -1,0 +1,8 @@
+<b>User name</b><br />
+Here are some possible Username formats:<br />
+<li> user.name@gmail.com</li> 
+<li> user.name@yahoo.com</li> 
+<li> user.name</li> 
+<br />
+For MS Exchange:<br />
+<li> win.domain\user.name</li> 

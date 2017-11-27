@@ -1,0 +1,10 @@
+<b>Destination can be:</b><br />
+A domain: gmail.com<br />
+A server name or IP: [server.domain.com] or [ip.add.re.ss]<br />
+A server name or IP with custom port: [server.domain.com]:2525 or [ip.add.re.ss]:2525<br />
+Multiple servers separated by commas: [server1.domain.com],[ip2.add.re.ss]<br />
+<br/>
+Note:<br/>
+Value without brackets = MX lookup - used for domains.<br />
+Value between [brackets] = no MX lookup - used for IPs and servers<br />
+<br />

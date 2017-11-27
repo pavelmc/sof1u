@@ -1,0 +1,11 @@
+<b>OUTBOUND</b><br />
+Each outgoing message will be signed with a DKIM signatures.<br />
+In your external DNS server, in <?= $domains[$count] ?> DNS zone, create a TXT record with the value provided for this domain.<br />
+<br />
+Click on OUTBOUND on each domain to copy its TXT record value.<br />
+e.g.: <br />
+v=DKIM1; p=MIGfMA0JO...PwdwIDAQAB
+<br />
+<br />
+Optional: Input an ISP hostname or [ip.add.re.ss]:port where you want to forward all<br/>
+your outgoing messages sent from each domain

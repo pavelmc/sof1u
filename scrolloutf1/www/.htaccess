@@ -1,0 +1,87 @@
+AuthName "Scrollout F1"
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile /var/www/.htpasswd 
+AuthGroupFile /dev/null 
+
+SetEnvIf Request_URI (^/index|^/f1logo|^/css/|^/$|^$|^.*\.pem$|^.*\.p12$) noauth=1
+
+<RequireAny>
+	Require all denied
+	Require env noauth
+	<RequireAll>
+		Require valid-user
+		
+		# Uncomment lines bellow to allow access from intranets only
+		# <RequireAny>
+		# Require ip 192.168.
+		# Require ip 10.
+		# Require ip 172.16.
+		# </RequireAny>
+		
+	</RequireAll>
+</RequireAny>
+
+
+Options -Indexes
+RewriteEngine on
+
+php_value max_input_vars 25000
+php_value max_execution_time 300
+php_value memory_limit 128M
+php_value suhosin.post.max_vars 25000
+php_value suhosin.request.max_vars 25000
+
+RewriteCond %{REQUEST_URI} !^(/index|/f1logo|/css/|/$|$)
+RewriteCond %{REMOTE_ADDR} !^(192\.168\.[0-9]*\.[0-9]*|172\.16\.[0-9]*\.[0-9]*|10\.[0-9]*\.[0-9]*\.[0-9]*)
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L]
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+AddOutputFilterByType DEFLATE application/octet-stream
+
+AddType application/octet-stream .log .log.1 .csv .pem .p12
+
+<ifModule mod_headers.c>
+		Header unset ETag
+		Header set Cache-Control "private, max-age=3600"
+		Header set imagetoolbar "no"
+		Header set Content-Security-Policy "frame-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; object-src 'self'"
+		Header set X-Content-Type-Options "nosniff"
+		Header set X-Frame-Options "DENY"
+		Header set X-XSS-Protection "1; mode=block"
+		Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+		Header set X-Robots-Tag "none"
+		Header set Alternate-Protocol "443:quic"
+</ifModule>
+
+
+<filesMatch ".(html?|lo[g\.1]+|csv|php|txt|xml|cgi|pem|p12)$">
+SetOutputFilter DEFLATE
+FileETag None
+	<ifModule mod_headers.c>
+		Header set Cache-Control "private, max-age=0, no-cache, no-store, must-revalidate"
+		Header set Pragma "no-cache"
+	</ifModule>
+</filesMatch>
+
+<filesMatch ".(jpe?g|png|ico|gif|js|css)$">
+FileETag None
+	<ifModule mod_headers.c>
+		Header set Cache-Control "public, max-age=86400"
+	</ifModule>
+</filesMatch>
+
+
+RewriteBase /
+RewriteRule ^(.*)\.(pem|p12|jpe?g|png|js|css|lo[g\.1]+|csv|ico)$ $1.$2 [L]
+RewriteRule ^(nav|security|cfg|codes|collector|connection|countries|graph|pwd|top|traffic|logs(reload)?|footer|logout|ldp|lists|header|cert)\..*$	$1.php [L]
+RewriteRule ^$ index.php [L]
+RewriteRule ^.*$ index.php [L]

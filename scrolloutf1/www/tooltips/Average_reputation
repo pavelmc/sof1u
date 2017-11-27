@@ -1,0 +1,13 @@
+<b>Average reputation</b><br />
+Measures the Volume and Score over a period of time for: <br />
+<li>Sender address</li>
+<li>Sender domain</li>
+<li>Sender IP</li>
+<li>Client name</li>
+<li>Fingerprints and more.</li>
+<br />
+FORMULA<br />
+Incremented Score / Incremented Volume >= Average reputation<br />
+When Incremented Score divided by Incremented Volume<br />
+is greater than (or equal to) Average reputation value<br />
+then the SMTP connection is not accepted.<br />

@@ -1,0 +1,7 @@
+<b>IMAP Server</b><br />
+Input the address of your IMAP server here.<br />
+Scrollout F1 will use this address to conect and fetch emails from your collector mailbox, via IMAP or IMAPS service.<br />
+i.e.:<br />
+<li>192.168.1.234</li>
+<li>imap.mail.yahoo.com</li>
+<li>imap.gmail.com</li>

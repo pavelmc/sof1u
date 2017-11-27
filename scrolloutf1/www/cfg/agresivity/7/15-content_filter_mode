@@ -1,0 +1,76 @@
+use strict;
+
+# You can modify this file to re-enable SPAM checking through spamassassin
+# and to re-enable antivirus checking.
+
+#
+# Default antivirus checking mode
+# Please note, that anti-virus checking is DISABLED by 
+# default.
+# If You wish to enable it, please uncomment the following lines:
+
+
+@bypass_virus_checks_maps = (
+   \%bypass_virus_checks, \@bypass_virus_checks_acl, \$bypass_virus_checks_re, \@virus_lovers_maps);
+
+@virus_lovers_maps = (
+ {
+   'postmaster@'		=> 1,
+   'abuse@'				=> 1,
+   'hostmaster@'		=> 1,
+   'webmaster@'			=> 1,
+   'admin@'				=> 1,
+   'administrator@'		=> 1,
+   'root@'				=> 1,
+ },
+);
+
+#
+# Default SPAM checking mode
+# Please note, that anti-spam checking is DISABLED by 
+# default.
+# If You wish to enable it, please uncomment the following lines:
+
+
+@bypass_spam_checks_maps = (
+   \%bypass_spam_checks, \@bypass_spam_checks_acl, \$bypass_spam_checks_re);
+
+@bypass_banned_checks_maps = (
+    \%bypass_banned_checks, \@bypass_banned_checks_acl, \$bypass_banned_checks_re);
+
+@bypass_header_checks_maps = (1);
+
+@author_to_policy_bank_maps = (
+	read_hash("/etc/amavis/sndr")
+);
+
+@spam_lovers_maps = (
+ {
+   'postmaster@'		=> 1,
+   'abuse@'				=> 1,
+   'hostmaster@'		=> 1,
+   'webmaster@'			=> 1,
+   'admin@'				=> 1,
+   'administrator@'		=> 1,
+   'root@'				=> 1,
+ },
+);
+
+
+$interface_policy{'10026'} = 'AVONLY';
+$policy_bank{'AVONLY'} = {  # those configured to send mail to port 10026
+   originating => 1,
+   bypass_spam_checks_maps		=> [1],  # don't spam-check this mail
+   bypass_virus_checks_maps		=> [0],  # don't virus-check this mail
+   bypass_banned_checks_maps	=> [1],  # don't banned-check this mail
+   bypass_header_checks_maps	=> [1],  # don't header-check this mail  
+};
+
+$policy_bank{'NO_BANNED_ATTACHMENTS'} = {  # those configured to send mail to port 10027
+   bypass_spam_checks_maps		=> [1],  # don't spam-check this mail
+   bypass_virus_checks_maps		=> [0],  # don't virus-check this mail
+   bypass_banned_checks_maps	=> [1],  # don't banned-check this mail
+   bypass_header_checks_maps	=> [1],  # don't header-check this mail  
+};
+
+1;  # ensure a defined return

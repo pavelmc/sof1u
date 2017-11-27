@@ -1,0 +1,35 @@
+use strict;
+
+#
+# These are Ubuntu specific defaults for amavisd-new configuration
+#
+# DOMAIN KEYS IDENTIFIED MAIL (DKIM)
+$enable_dkim_verification = 1;
+# Don't be verbose about sending mail:
+@whitelist_sender_acl = qw( .$mydomain );
+$final_virus_destiny      = D_DISCARD; # (defaults to D_BOUNCE)
+$final_banned_destiny     = D_PASS;  # (defaults to D_BOUNCE)
+$final_spam_destiny       = D_PASS;  # (defaults to D_REJECT)
+$final_bad_header_destiny = D_PASS;  # (defaults to D_PASS), D_BOUNCE suggested
+
+$warnvirusrecip = 1;
+$warnbannedrecip = 1;
+# $warnbadhrecip = 1;
+
+$virus_admin = "xREPORT_VIRUSx";
+$spam_admin = "xREPORT_SPAMx";
+$banned_admin = "xREPORT_SPAMx";
+# $bad_header_admin = "xREPORT_SPAMx";
+
+$mailfrom_notify_admin     = "postmaster\@$mydomain";
+$mailfrom_notify_recip     = "postmaster\@$mydomain";
+$mailfrom_notify_spamadmin = "postmaster\@$mydomain";
+
+$hdrfrom_notify_sender 		= "\"Scrollout F1 at $myhostname\" <postmaster\@$mydomain>";
+$hdrfrom_notify_admin 		= "\"Scrollout F1 at $myhostname\" <postmaster\@$mydomain>";
+$hdrfrom_notify_spamadmin 	= "\"Scrollout F1 at $myhostname\" <postmaster\@$mydomain>";
+$hdrfrom_notify_recip		= "\"Scrollout F1 at $myhostname\" <postmaster\@$mydomain>";
+
+
+#------------ Do not modify anything below this line -------------
+1;  # insure a defined return

@@ -1,0 +1,107 @@
+html, body, .footer {
+  background: #fff;
+}
+
+.footer{
+	color: #000;
+}
+
+.dash_item_img,
+.dash_item_title{
+	color: #000;
+}
+
+a, #night_mode_icon, #day_mode_icon{
+	color:#000;
+}
+
+.navbar-right{
+	background: #fff;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd){
+  background-color: #e2e2e2;
+}
+
+.dash_item:hover{
+	background: #f5f5f5;
+}
+
+.nav.side-menu>li:hover, .nav.side-menu>li.active{
+  background: #ececec;
+}
+
+.navbar-toggle .icon-bar{
+	background: #333;
+}
+
+
+
+
+
+
+.form-control{
+  background: #fff;
+  border-color: #eee;
+  color: #333;
+}
+.input-group .input-group-addon{
+  background-color: #eee;
+  border: 1px solid #ccc;
+  color: #555;
+}
+
+
+
+.modal-content{
+  background: #fff;
+}
+
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control{
+  background-color: #cecece;
+}
+
+.row.coloreveryother:nth-child(even),
+.row.coloreveryothersecond:nth-child(odd) {
+    background-color: #ececec;
+}
+
+tr.coloreveryother:nth-child(even),
+tr.coloreveryothersecond:nth-child(odd) {
+    background-color: #ececec;
+}
+.section-header, .section-chevron{
+	color:#000;
+}
+
+.country_name{
+  color:#000;
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (max-width : 1200px) {
+
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 992px) {
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px) {
+	.navbar-fixed-top{
+	  background:#fff;
+	}
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 480px) {
+
+}
+
+/* Custom, iPhone Retina */ 
+@media only screen and (max-width : 320px) {
+
+}

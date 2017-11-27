@@ -1,0 +1,12 @@
+<b>Connect to Windows share</b><br />
+<li> Create a folder on a Windows file server or PC Workstation: \\intranet\dlp <br />
+<?= (!empty($values['file_server']) && !empty($values['share'])) ? ('in this case the \\\\intranet\\dlp is \\\\' . $values['file_server'] . '\\' . $values['share'] . '<br /><br />') : '' ?></li> 
+
+<li> Share that folder (shared folder: "dlp").<br />
+<?= !empty($values['share']) ? ('in this case the \\dlp is \\' . $values['share'] . '<br /><br />') : '' ?></li> 
+
+<li> Provide full permissions for the account used here 
+<?= !empty($values['user_domain']) ? ($values['user_domain'] . '\\') : '' ?><?= !empty($values['folder_username']) ? $values['folder_username'] : '' ?>.</li> 
+<li> Provide write permissions for Group Account(s) which includes managers and team leaders.</li> 
+
+

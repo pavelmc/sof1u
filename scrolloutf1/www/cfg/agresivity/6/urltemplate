@@ -1,0 +1,73 @@
+#####################################################
+# AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
+#####################################################
+rawbody         _EXTERNAL_CONTENT         /\bsrc\s*?=(3D)?\s*?["']?(http|ftp)s?:\/\/.*\..*\/.*["']?/i
+describe        _EXTERNAL_CONTENT         Externaly linked content
+score           _EXTERNAL_CONTENT         0.4
+
+rawbody         _SCRIPT_TAG         /<(java)?(\/)?script>["']?/i
+describe        _SCRIPT_TAG         Script tag in source
+score           _SCRIPT_TAG         0.4
+
+rawbody         _IFRAME_TAG         /<(\/)?iframe>["']?/i
+describe        _IFRAME_TAG         Iframe tag in source
+score           _IFRAME_TAG         0.4
+
+meta            SO_SCRIPT                  _IFRAME_TAG && _SCRIPT_TAG
+describe        SO_SCRIPT                  Iframe & Script in source
+score           SO_SCRIPT                  0.7
+
+meta            SO_MKT1					MARKETING_PARTNERS && (BAYES_60 || BAYES_80 || BAYES_95 || BAYES_99 || BAYES_999) && (SO_RDNS_UNKNOWN || RDNS_NONE || PYZOR_CHECK || RAZOR2_CHECK) && (_SO_ML || _SO_MLU) && _EXTERNAL_CONTENT && (!LOCAL_AUTH_RCVD || !trusted_networks || !internal_networks)
+describe        SO_MKT1					Suspect marketer or not compliant
+score           SO_MKT1					2.0
+
+meta            SO_MKT2					(!BAYES_00 && !BAYES_05 && !BAYES_20 && !BAYES_40) && (BAYES_60 || BAYES_80 || BAYES_95 || BAYES_99 || BAYES_999) && (SO_RDNS_UNKNOWN || RDNS_NONE || PYZOR_CHECK || RAZOR2_CHECK) && _EXTERNAL_CONTENT && (!LOCAL_AUTH_RCVD || !trusted_networks || !internal_networks)
+describe        SO_MKT2					Suspect marketer or not compliant
+tflags			SO_MKT2					learn
+score           SO_MKT2					2.0
+
+uri             _IP_LINK        /^(?:https?:\/\/|ftps?:\/\/)[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(?:\/[a-z0-9=\.\+-_\?]*|$)/i
+describe        _IP_LINK        Contains IP Address in URL
+uri             _LOCALIP_LINK   /^(?:https?:\/\/|ftps?:\/\/)(10|172|192)\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}(?:\/|$)/i
+describe        _LOCALIP_LINK   Contains Intranet IP Address in URL
+score           _LOCALIP_LINK   -0.4
+uri             _EXE_LINK       /^(?:https?|ftps?):\/\/.*\..*\/.*!(?:@|www\.).*\.(?:\{.*\}|bat|chm|cmd|cpl|csh|exe|fxp|hta|inf|jse?|msc|msi|msp|mst|pif|prf|prg|pst|reg|scf|scr|sct|shb|shs|vb|vbe|vbs|vsmacros|sh|x)(\.)?$/i
+describe        _EXE_LINK       Link pointing to an executable
+score           _EXE_LINK       0.4
+meta            IP_TO_EXE       (((_IP_LINK && !_LOCALIP_LINK) + _EXE_LINK) > 1)
+describe        IP_TO_EXE       Link contains IP and points to exec. file
+score           IP_TO_EXE       0.4
+meta            PHISH_LINK      (_IP_LINK && !_LOCALIP_LINK)
+describe        PHISH_LINK      Possible Phishing link due external IP
+score           PHISH_LINK      0.4
+
+uri         SO_CID_LINK            /^(?:https?:\/\/|ftps?:\/\/)cid:.*(?:\/|$)/i
+describe    SO_CID_LINK            Contains CID URL
+score       SO_CID_LINK            0.4
+
+
+uri             _HASH_LINK              /^(?:https?:\/\/|ftps?:\/\/)[^\/]+.*\/.*=[a-z0-9]{32,}.*(?:\/|$)/i
+describe        _HASH_LINK              Dynamic link with hash key
+score           _HASH_LINK              0.0
+uri             _AUTOMATED_LINK         /^(?:https?:\/\/|ftps?:\/\/)[^\/]+.*\/.*(invitation|invite|friend|share|flick|profile|social|group|campaign|card|custom|client).*(?:\/|$)/i
+describe        _AUTOMATED_LINK         Link looks from automated system
+score           _AUTOMATED_LINK         0.0
+uri             _COMMON_FOOTER          /^(?:https?:\/\/|ftps?:\/\/)[^\/]+.*\/.*(privat|privacy|policy|subscribe|remove|term|disclaim|tos|block).*(?:\/|$)/i
+describe        _COMMON_FOOTER          Link commonly used in footer automated email
+score           _COMMON_FOOTER          0.0
+uri             _SPLITHASH_LINK         /^(?:https?:\/\/|ftps?:\/\/)[^\/]+.*\/.*=[0-9]{10,}.*=[a-z0-9]{10,}.*(?:\/|$)/i
+describe        _SPLITHASH_LINK         Dynamic link with splited or double hash key
+score           _SPLITHASH_LINK         0.0
+meta            SO_NIC                  (((_EMB_IMG && (_LARGE_EMB_IMG || XLARGE_EMB_IMG)) + _EXTERNAL_CONTENT + _HASH_LINK + _AUTOMATED_LINK + _COMMON_FOOTER + _SPLITHASH_LINK) > 1)
+describe        SO_NIC                  Newsletter, Invitation or Commercial
+score           SO_NIC                  0.5
+meta            SO_IMAGE                ((_EXTERNAL_IMG + _EMB_IMG + (_LARGE_EMB_IMG || _XLARGE_EMB_IMG)) > 1)
+describe        SO_IMAGE                Large or eXtraLarge embedded image
+score           SO_IMAGE                0.0
+
+meta			SO_URI_HEX				URI_HEX && (!BAYES_00 && !BAYES_05 && !BAYES_20) && (SO_RDNS_UNKNOWN || RDNS_NONE || PYZOR_CHECK || RAZOR2_CHECK) && (_EXTERNAL_CONTENT || _HASH_LINK || _AUTOMATED_LINK || _COMMON_FOOTER || SPLITHASH_LINK || _EXTERNAL_CONTENT || SO_CID_LINK || PHISH_LINK || RDNS_DYNAMIC || DIGEST_MULTIPLE)
+describe		SO_URI_HEX				Masqueraded hostname using hex and SOF1 suspicious content
+tflags			SO_URI_HEX				learn
+score			SO_URI_HEX				1.5
+
+###############################

@@ -1,0 +1,26 @@
+<b>SECURE WHITELIST</b><br/>
+<br/>
+Senders without valid SPF or From addresses without valid DKIM are ignored. <br/>
+Works differently than a Blacklist.<br/>
+Works for SMTP Senders (in Return-Path) with SPF to avoid spoofed Senders addresses<br/>
+Works for From: with DKIM to avoid spoofed addresses in From<br/>
+Overrides SMTP rules, BANNED attachments and SPAM filter.<br/>
+<br/>
+Supported Formats: <br/>
+<ul>sender@domain.com - the exact sender address.</ul>
+<ul>@domain.com - any sender address @domain.com.</ul>
+<ul>.domain.com - any sender address @any-sub.domain.com.</ul>
+<ul>domain.com - any sender address @any-domain-that-ends-with-domain.com.</ul>
+<br/>
+Effect on SMTP rules (1st layer)<br/>
+<ul>Connection filter <= 6: SPF authenticated Senders, found in the list, skip most SMTP rules.</ul>
+<ul>Connection filter >= 7: Senders, found in the list, skip most SMTP rules.</ul>
+<br/>
+Effect on BANNED attachments (2nd layer)<br/>
+<ul>DKIM authenticated Senders, found in the list, skip the attachment BAN.<br/>
+Note: Some forged Senders might be rejected by SPF fail at SMTP (1st layer).</ul>
+<br/>
+Effect on SPAM filter (3rd layer)<br/>
+<ul>SPF authenticated Senders, found in the list, skip the Spam filter.</ul>
+<ul>DKIM authenticated Senders, found in the list, skip the Spam filter.</ul>
+<br/>

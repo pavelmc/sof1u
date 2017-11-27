@@ -1,0 +1,12 @@
+<DL>
+<DT><b>Assign outbound virtual IP address for this Sender Domain</b><br />
+<i>The IP address must be directly connected to Internet. (not behind a NAT)</i><br />
+<i>The IP address must have a valid reverse DNS (PTR) records.</i><br />
+<br />
+Assigning an outbound IP address to a Sender Domain may:<br />
+<DD>Prevent default IP from losing reputation when this Sender Domain is not trusted.
+<DD>Increase delivery/quality by associating an IP with good reputation to this Sender Domain.
+<DD>Increase limits/time by associating an IP with good throughout to this Sender Domain.
+<DD>Build reputation for a new IP using a Sender Domain with normal transactions.
+<DD>Isolate this domain from being associated with others.
+</DL>

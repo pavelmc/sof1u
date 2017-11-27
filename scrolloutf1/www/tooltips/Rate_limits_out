@@ -1,0 +1,5 @@
+<b>Rate limits for outgoing SMTP:</b><br />
+Limits the maximum number of:<br />
+<li>simultaneous connections made to the same destination (domain) = value selected.</li>
+<li>recipients per delivery = value selected x 10.</li>
+<br />

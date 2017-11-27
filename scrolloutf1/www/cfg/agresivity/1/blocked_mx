@@ -1,0 +1,12 @@
+localhost				REJECT Localhost address in MX record or Helo command
+localhost.localdomain	REJECT Localhost address in MX record or Helo command
+127						REJECT Localhost IP in MX record or Helo command
+0						REJECT Broadcast address in MX record or Helo command
+10						REJECT Internal IP in MX record or Helo command
+192.168					REJECT Internal IP in MX record or Helo command
+172.16					REJECT Internal IP in MX record or Helo command
+169.254					REJECT Internal IP in MX record or Helo command
+224						REJECT Reserved IP in MX record or Helo command
+240						REJECT Reserved IP in MX record or Helo command
+248						REJECT Reserved IP in MX record or Helo command
+dev.null				REJECT Null MX record or Helo command

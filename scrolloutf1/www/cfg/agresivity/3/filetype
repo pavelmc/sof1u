@@ -1,0 +1,165 @@
+
+$banned_filename_re = new_RE(
+  qr'^UNDECIPHERABLE$',  # is or contains any undecipherable components
+
+  # block certain double extensions anywhere in the base name
+  qr'\.[^./]*\.(exe|vbs|pif|scr|bat|cmd|com|cpl|dll)\.?$'i,
+
+  qr'\{[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}\}?$'i, # Windows Class ID CLSID, strict
+
+  qr'^application/x-msdownload$'i,                  # block these MIME types
+  qr'^application/x-msdos-program$'i,
+  qr'^application/x-dosexec$'i,
+  qr'^text/cmd$'i,
+  qr'^text/x-msdos-batch$'i,
+  qr'^application/hta$'i,
+  qr'^application/vnd.android.package-archive$'i,
+  qr'^application/java$'i,
+  qr'^application/java-class$'i,
+  qr'^application/x-java-applet$'i,
+  qr'^application/x-java-vm$'i,
+  qr'^application/java-archive$'i,
+  qr'^application/x-java-archive-diff$'i,
+  qr'^application/json$'i,
+  qr'^application/x-javascript$'i,
+  qr'^application/x-shockwave-flash$'i,
+  qr'^text/javascript$'i,
+  qr'^application/x-vbs$'i, 
+  qr'^text/vbs$'i,
+  qr'^text/vbscript$'i,
+  qr'^application/x-mso$'i,
+  qr'^application/.*macro.*$'i,
+  qr'^application/x-vbscript$'i,
+
+# qr'^application/x-msmetafile$'i,	# Windows Metafile MIME type
+# qr'^\.wmf$',				# Windows Metafile file(1) type
+
+  qr'^message/partial$'i, qr'^message/external-body$'i, # rfc2046 MIME types
+
+# [ qr'^\.(Z|gz|bz2)$'           => 0 ],  # allow any in Unix-compressed
+# [ qr'^\.(rpm|cpio|tar)$'       => 0 ],  # allow any in Unix-type archives
+# [ qr'^\.(zip|rar|arc|arj|zoo)$'=> 0 ],  # allow any within such archives
+# [ qr'^application/x-zip-compressed$'i => 0],  # allow any within such archives
+
+
+####################################
+####### advanced executable ########
+####################################
+
+  qr'.\.(ace|ade|adp|app|bas|bat|chm|cmd|com|cpl|crt|emf|exe|fxp|grp|hlp|hta|hm[il]|
+         inf|ins|isp|js|jse|lnk|mda|mdb|mde|mdw|mdt|mdz|msc|msi|msp|mst|
+         ops|pcd|pif|prg|reg|scr|sct|shb|shs|vb|vbe|vbs|
+         wsc|wsf|wsh)$'ix,  # banned extention - long
+
+
+
+####################################
+######### multimedia ###############
+####################################
+
+  qr'.\.(avi|mov|divx|qt|m[13][vu]|mp[veag0-9]|wm[avd]?|wa[xv]|midi?|r[mia]|a[si][xf][fc]?|au|snd|ivf|wmz|wvx|wpl)$'ix,  # banned multimedia file type
+
+###################################
+
+
+  qr'.\.(mim|b64|bhx|hqx|xxe|uu|uue)$'i,  # banned extension - WinZip vulnerab.
+
+  qr'^\.(exe-ms)$',                       # banned file(1) types
+  qr'^\.(exe|lha|cab|dll)$',         # banned file(1) types
+);
+
+$banned_namepath_re = new_RE(
+
+# block these MIME types
+	[ qr'(?#NO X-MSDOWNLOAD)   
+		^ (.*\t)? M=application/x-msdownload
+		(\t.*)? $'xmi => 'DISCARD'],
+		
+	[ qr'(?#NO X-MSDOS-PROGRAM)
+		^ (.*\t)? M=application/x-msdos-program
+		(\t.*)? $'xmi => 'DISCARD'],
+		
+	[ qr'(?#NO HTA)
+		^ (.*\t)? M=application/hta
+		(\t.*)? $'xmi => 'DISCARD'],
+		
+	[ qr'(?# BLOCK ACE archive )
+	^ (.*\t)? M=application/octet-stream
+	\tT=ace
+	(\t.*)? $'xmi => 'DISCARD'],
+	
+# block rfc2046 MIME types
+	[ qr'(?# BLOCK RFC2046 )
+	^ (.*\t)? M=message/partial
+	(\t.*)? $'xmi => 'DISCARD'],
+	
+	[ qr'(?# BLOCK RFC2046 )
+	^ (.*\t)? M=message/external-body
+	(\t.*)? $'xmi => 'DISCARD'],
+
+	[ qr'(?# BLOCK OBFUSCATED APPLICATION/OCTET-STREAM,ZIP)
+       ^ (.*\t)? M=application/(octet-stream|zip|x-zip-compressed) 
+	   \t(.*\t)* T=(longline|malware|asc|html|sgml|dat) 
+	   \t(.*\t)* N=[^\t\n]* \. (js|json|jar|rtf|rar|msg|mdb|ppt|mmp|prj|zip|hm[il]?|avi|gz|xls[xm]?|doc[xm]?|dot[xm]?|xltx|xml|zip|hm[il]?|s?html?|sgml|jpg|mpg|mpeg|ps|tar|tif|tiff|txt|vsd|wav|xml) 
+	   (\t.*)? $'xmi => 'DISCARD'],
+
+	[ qr'(?# BLOCK APPLICATION/OCTET-STREAM MIME WITH EMPTY FILE TYPE)
+       ^ (.*\t)? M=application/octet-stream 
+	   \t(.*\t)* T=(empty|nowords) 
+	   (\t.*)? $'xmi => 'DISCARD'],
+
+	[ qr'(?# BLOCK MALWARE FILES as text/html)
+       ^ (.*\t)? M=text/html 
+	   \t(.*\t)* T=(longline|empty|malware) 
+	   \t(.*\t)* N=[^\t\n]* \. (js|json|jar|rtf|rar|msg|mdb|ppt|mmp|prj|pdf|xls[xm]?|doc[xm]?|dot[xm]?|xltx|xml|zip|hm[il]?|avi|gz|sgml|mpg|mpeg|ps|tar|vsd|wav|xml)
+	   (\t.*)? $'xmi => 'DISCARD'],
+
+	[ qr'(?# BLOCK MALWARE FILES as text/plain)
+       ^ (.*\t)? M=text/plain 
+	   \t(.*\t)* T=(longline|empty|malware) 
+	   \t(.*\t)* N=[^\t\n]* \. (js|json|jar|rtf|rar|msg|mdb|ppt|mmp|prj|pdf|xls[xm]?|doc[xm]?|dot[xm]?|xltx|xml|zip|hm[il]?|avi|gz|sgml|mpg|mpeg|ps|tar|vsd|wav|xml)
+	   (\t.*)? $'xmi => 'DISCARD'],
+
+	[ qr'(?# ALLOW IMAGE with EMPTY MS OFFICE DOCUMENT)
+	   \tM=application/(vnd.openxmlformats-officedocument.wordprocessingml.document|msword|vnd.ms-word.document.macroEnabled.12|vnd.ms-word.template.macroEnabled.12|vnd.ms-powerpoint.presentation.macroEnabled.12|vnd.ms-powerpoint.template.macroEnabled.12|vnd.ms-powerpoint.slideshow.macroEnabled.12)  
+	   \tT=nowords
+	   \tT=office
+	   \tT=(doc[xm]?|xl[st][xm]?|dot[xm]?|xml|zip|hm[il]?|s?html?)
+	   \tN=[^\t\n]* \. (doc[xm]?|xl[st][xm]?|dot[xm]?|xml|zip|hm[il]?|s?html?) 
+	   \n.*
+	   \tT=image
+	   \tT=png
+	   \tN=image_\d+[^\t\n]*
+	   $'xmi => 0 ],
+	   
+	[ qr'(?# BLOCK EMPTY MS OFFICE DOCUMENT)
+		^ (.*\t)? M=application/(octet-stream|vnd.openxmlformats-officedocument.wordprocessingml.document|msword|vnd.ms-word.document.macroEnabled.12|vnd.ms-word.template.macroEnabled.12|vnd.ms-powerpoint.presentation.macroEnabled.12|vnd.ms-powerpoint.template.macroEnabled.12|vnd.ms-powerpoint.slideshow.macroEnabled.12)  
+		\t(.*\t)* T=nowords 
+		\t(.*\t)* N=[^\t\n]* \. (doc[xm]?|xl[st][xm]?|dot[xm]?|xml|zip|hm[il]?|s?html?) 
+		(\t.*)? $'xmi => 'DISCARD'],
+		
+	[ qr'(?# BLOCK FORGED MS OFFICE)
+		^ (.*\t)? M=application/(vnd.openxmlformats-officedocument.wordprocessingml.document|msword|vnd.ms-word.document.macroEnabled.12|vnd.ms-word.template.macroEnabled.12|vnd.ms-powerpoint.presentation.macroEnabled.12|vnd.ms-powerpoint.template.macroEnabled.12|vnd.ms-powerpoint.slideshow.macroEnabled.12)  
+		\t(.*\t)* T=(html|xml|asc|txt)
+		\t(.*\t)* N=[^\t\n]* \. (doc[xm]?|xl[st][xm]?|dot[xm]?|xml|zip|hm[il]?|s?html?) 
+		(\t.*)? $'xmi => 'DISCARD'],
+		
+	[ qr'(?# BLOCK MS OFFICE 2007+ WITH MACRO)
+		^ (.*\t)? M=application/.*.macroenabled..*
+		\t(.*\t)* T=office
+		\t(.*\t)* N=[^\t\n]* \. (doc[xm]?|xl[st][xm]?|dot[xm]?|xml|zip|hm[il]?|s?html?) 
+		(\t.*)? $'xmi => 'DISCARD'], 
+
+	[ qr'(?# BLOCK SUSPICIOUS EXCEL)
+		^ (.*\t)? M=application/(octet-stream|vnd.ms-excel|msexcel|x-msexcel|x-ms-excel|x-excel|x-dos_ms_excel|xls|x-xls|vnd.openxmlformats-officedocument.spreadsheetml.sheet|vnd.openxmlformats-officedocument.spreadsheetml.template|vnd.ms-excel.sheet.macroEnabled.12)  
+		\t(.*\t)* T=(nowords|malware)
+		\t(.*\t)* N=[^\t\n]* \. xl[st][xm]? 
+		(\t.*)? $'xmi => 'DISCARD'],
+
+	[ qr'(?# BLOCK HTML or JS FILES within .zip)
+		\tM=application/(zip|x-zip-compressed)\tT=zip\tN=[^\t\n]* \. zip\n.*\tT=(malware|empty|longline)\tN=[^\t\n]* \. (s?html?|js)$'xmi => 'DISCARD'],
+
+);
+
+# See http://support.microsoft.com/default.aspx?scid=kb;EN-US;q262631
+# and http://www.cknow.com/vtutor/vtextensions.htm

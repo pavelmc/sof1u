@@ -1,0 +1,154 @@
+
+# This is the right place to customize your installation of SpamAssassin.
+#
+# See 'perldoc Mail::SpamAssassin::Conf' for details of what can be
+# tweaked.
+#
+# Only a small subset of options are listed below
+#
+###########################################################################
+
+#   Add *****SPAM***** to the Subject header of spam e-mails
+#
+rewrite_header Subject Spam: 
+
+
+#   Save spam messages as a message/rfc822 MIME attachment instead of
+#   modifying the original message (0: off, 2: use text/plain instead)
+#
+# report_safe 1
+
+
+#   Set which networks or hosts are considered 'trusted' by your mail
+#   server (i.e. not spammers)
+#
+# trusted_networks 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+
+#   Set file-locking method (flock is not safe over NFS, but is faster)
+#
+# lock_method flock
+
+
+#   Set the threshold at which a message is considered spam (default: 5.0)
+#
+required_score 3.0
+
+
+#   Use Bayesian classifier (default: 1)
+#
+use_bayes 1
+use_pyzor 1
+pyzor_max 1
+
+#   Bayesian classifier auto-learning (default: 1)
+#
+
+bayes_auto_learn 1
+bayes_auto_learn_threshold_nonspam -0.7
+bayes_auto_learn_threshold_spam 9.5
+
+
+#   Set headers which may provide inappropriate cues to the Bayesian
+#   classifier
+#
+# bayes_ignore_header X-Bogosity
+# bayes_ignore_header X-Spam-Flag
+# bayes_ignore_header X-Spam-Status
+
+
+#   Some shortcircuiting, if the plugin is enabled
+# 
+loadplugin Mail::SpamAssassin::Plugin::Shortcircuit
+ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
+#
+#   default: strongly-whitelisted mails are *really* whitelisted now, if the
+#   shortcircuiting plugin is active, causing early exit to save CPU load.
+#   Uncomment to turn this on
+#
+shortcircuit USER_IN_WHITELIST       on
+shortcircuit USER_IN_DEF_WHITELIST   on
+shortcircuit USER_IN_ALL_SPAM_TO     on
+shortcircuit SUBJECT_IN_WHITELIST    on
+
+#   the opposite; blacklisted mails can also save CPU
+#
+shortcircuit USER_IN_BLACKLIST       on
+shortcircuit USER_IN_BLACKLIST_TO    on
+shortcircuit SUBJECT_IN_BLACKLIST    on
+
+#   if you have taken the time to correctly specify your "trusted_networks",
+#   this is another good way to save CPU
+#
+# shortcircuit ALL_TRUSTED             on
+
+#   and a well-trained bayes DB can save running rules, too
+#
+
+shortcircuit DKIM_ADSP_DISCARD                spam
+shortcircuit SPF_FAIL                spam
+shortcircuit BAYES_80                spam
+priority BAYES_80              -100
+shortcircuit BAYES_95                spam
+priority BAYES_95              -100
+shortcircuit BAYES_99                spam
+priority BAYES_99              -100
+shortcircuit BAYES_999			spam
+priority BAYES_999              -150
+
+# shortcircuit BAYES_00                ham
+
+endif # Mail::SpamAssassin::Plugin::Shortcircuit
+score DNS_FROM_AHBL_RHSBL 0 0.3 0.5 0
+score URIBL_AB_SURBL	0 1.499 0 1.499
+
+# bayes_expiry_max_db_size	1500000
+# bayes_journal_max_size		1024000
+
+
+### adjust predefined scores
+score FSL_MISSP_REPLYTO                     1.842 2.067 1.842 2.067
+score OBFU_ATTACH_MISSP                     1.669 1.129 1.669 1.129
+score TO_NO_BRKTS_MSFT						2.499 1.946 2.499 1.946
+score RCVD_IN_IADB_DOPTIN			-0.4
+score RCVD_IN_IADB_ML_DOPTIN		-0.6
+score RCVD_IN_IADB_OOO				-0.8
+
+# IADB SENDER ACCREDITATION PROGRAM ANNOUNCED BY INSTITUTE FOR SPAM AND INTERNET PUBLIC POLICY - Disabled!
+
+score   RCVD_IN_IADB_DK 0
+score   RCVD_IN_IADB_DOPTIN     0
+score   RCVD_IN_IADB_DOPTIN_GT50        0
+score   RCVD_IN_IADB_DOPTIN_LT50        0
+score   RCVD_IN_IADB_EDDB       0
+score   RCVD_IN_IADB_EPIA       0
+score   RCVD_IN_IADB_GOODMAIL   0
+score   RCVD_IN_IADB_LISTED     0
+score   RCVD_IN_IADB_LOOSE      0
+score   RCVD_IN_IADB_MI_CPEAR   0
+score   RCVD_IN_IADB_MI_CPR_30  0
+score   RCVD_IN_IADB_MI_CPR_MAT 0
+score   RCVD_IN_IADB_ML_DOPTIN  0
+score   RCVD_IN_IADB_NOCONTROL  0
+score   RCVD_IN_IADB_OOO        0
+score   RCVD_IN_IADB_OPTIN      0
+score   RCVD_IN_IADB_OPTIN_GT50 0
+score   RCVD_IN_IADB_OPTIN_LT50 0
+score   RCVD_IN_IADB_OPTOUTONLY 0
+score   RCVD_IN_IADB_RDNS       0
+score   RCVD_IN_IADB_SENDERID   0
+score   RCVD_IN_IADB_SPF        0
+score   RCVD_IN_IADB_UNVERIFIED_1       0
+score   RCVD_IN_IADB_UNVERIFIED_2       0
+score   RCVD_IN_IADB_UT_CPEAR   0
+score   RCVD_IN_IADB_UT_CPR_30  0
+score   RCVD_IN_IADB_UT_CPR_MAT 0
+score   RCVD_IN_IADB_VOUCHED    0
+
+# Signed by ClamAV
+header		SO_AV_PHISH_1		X-Amavis-AV-Status =~ /\bAV:Phishing\.Heuristics\./
+describe	SO_AV_PHISH_1		AV Detected phishing email
+score		SO_AV_PHISH_1		2.25
+
+header		SO_AV_PHISH_2		X-Amavis-AV-Status =~ /\bAV:(Email|HTML)\.Phish/
+describe	SO_AV_PHISH_2		AV Detected phishing email
+score		SO_AV_PHISH_2		2.25

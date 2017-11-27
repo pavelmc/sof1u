@@ -1,0 +1,3 @@
+<b>Smart host or host relay</b><br />
+Optional: Input an ISP hostname or [ip.add.re.ss] where you want to forward all<br/>
+your outgoing messages sent from this domain <?= $domains[$count] ?>

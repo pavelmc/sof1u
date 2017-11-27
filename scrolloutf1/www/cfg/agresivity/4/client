@@ -1,0 +1,13 @@
+
+### WHITE LIST trusted host names ###
+/\.hotmail\.com$/	  OK
+/\.google\.com$/	   OK
+/\.yahoo\.[a-z]{2,3}$/		OK
+/\.gmail\.com$/		OK
+/\.microsoft\.com$/		OK
+/\.linkedin\.com$/		OK
+/\.twitter\.com$/		OK
+/\.ebay\.com$/		OK
+/\.paypal\.com$/		OK
+
+

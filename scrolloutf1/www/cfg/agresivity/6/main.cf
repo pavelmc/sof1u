@@ -1,0 +1,242 @@
+
+############################################################
+# CONFIG AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
+############################################################
+
+address_verify_sender = root
+
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+# myorigin = /etc/mailname
+
+
+myorigin = xDOMAINx
+smtpd_banner = xHOSTNAMEx.xDOMAINx ESMTP ${stress?stressed} xORGANIZATIONx
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+# delay_warning_time = ${stress?120}${stress:60}m
+
+readme_directory = no
+
+# TLS parameters
+smtpd_tls_fingerprint_digest = sha1
+smtp_tls_fingerprint_digest = sha1
+
+smtp_tls_policy_maps = hash:/etc/postfix/tls_policy_custom
+smtp_tls_note_starttls_offer = yes
+tls_random_source = dev:/dev/urandom
+smtp_tls_CApath = /etc/ssl/certs
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+smtpd_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+
+smtpd_tls_dh1024_param_file = /etc/postfix/certs/dh_1024.pem
+smtpd_tls_dh512_param_file = /etc/postfix/certs/dh_512.pem
+smtpd_tls_eecdh_grade = strong
+tls_preempt_cipherlist = no
+
+
+smtpd_tls_cert_file=/etc/postfix/certs/scrollout.cert
+smtpd_tls_key_file=/etc/postfix/certs/scrollout.key
+
+smtp_tls_cert_file=/etc/postfix/certs/scrollout.cert
+smtp_tls_key_file=/etc/postfix/certs/scrollout.key
+
+# smtpd_tls_dcert_file=/etc/postfix/certs/scrollout-dsa.cert
+# smtpd_tls_dkey_file=/etc/postfix/certs/scrollout-dsa.key
+
+# smtp_tls_dcert_file=/etc/postfix/certs/scrollout-dsa.cert
+# smtp_tls_dkey_file=/etc/postfix/certs/scrollout-dsa.key
+
+# smtpd_tls_eccert_file = /etc/postfix/certs/scrollout-ecdsa.cert
+# smtpd_tls_eckey_file = /etc/postfix/certs/scrollout-ecdsa.key
+
+# smtp_tls_eccert_file = /etc/postfix/certs/scrollout-ecdsa.cert
+# smtp_tls_eckey_file = /etc/postfix/certs/scrollout-ecdsa.key
+
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+smtpd_tls_session_cache_timeout = ${stress?7200}${stress:3600}s
+smtpd_tls_always_issue_session_ids = yes
+
+smtpd_tls_loglevel = 1
+smtp_tls_loglevel = 1
+
+smtpd_tls_exclude_ciphers = aNULL, eNULL, MD5
+smtp_tls_exclude_ciphers = aNULL, eNULL, MD5
+
+smtpd_tls_mandatory_exclude_ciphers = aNULL, eNULL, MD5
+smtp_tls_mandatory_exclude_ciphers = aNULL, eNULL, MD5, DES, DSS
+
+smtpd_use_tls = yes
+smtp_tls_ciphers = export
+smtpd_tls_ciphers = export
+smtpd_tls_received_header = yes
+
+smtpd_tls_security_level = may
+smtp_tls_security_level = may
+
+smtpd_tls_mandatory_ciphers = medium
+smtp_tls_mandatory_ciphers = medium
+
+smtp_tls_protocols = !SSLv2
+smtp_tls_mandatory_protocols = !SSLv2,!SSLv3
+
+smtpd_tls_protocols = !SSLv2
+smtpd_tls_mandatory_protocols = !SSLv2,!SSLv3
+
+lmtp_tls_mandatory_protocols = !SSLv2,!SSLv3
+lmtp_tls_protocols = !SSLv2,!SSLv3
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+
+smtpd_discard_ehlo_keyword_address_maps =
+	cidr:/etc/postfix/esmtp_access
+	
+
+myhostname = xHOSTNAMEx.xDOMAINx
+# relayhost =
+mailbox_size_limit = 0
+message_size_limit = ${stress?15728640}${stress:52428800}
+recipient_delimiter = +
+
+
+mydestination = 
+local_recipient_maps =
+virtual_alias_maps = hash:/etc/postfix/virtual_custom hash:/etc/postfix/virtual pcre:/etc/postfix/virtual_alias
+# alias_maps = hash:/etc/aliases
+# alias_database = hash:/etc/aliases
+relay_domains = xRELAYDOMAINx
+parent_domain_matches_subdomains = debug_peer_list smtpd_access_maps
+
+
+transport_maps = hash:/etc/postfix/transport_custom hash:/etc/postfix/transport
+relay_recipient_maps = hash:/etc/postfix/relay_recipients	
+
+unknown_address_reject_code = 550
+unverified_recipient_reject_code = 450
+# smtpd_reject_unlisted_sender = no
+address_verify_relayhost =
+
+smtpd_client_restrictions =
+	permit_mynetworks
+
+smtpd_helo_required = yes
+smtpd_helo_restrictions =
+	permit_mynetworks
+	${stress?reject_invalid_hostname}
+	${stress?reject_invalid_helo_hostname}
+	${stress?reject_non_fqdn_helo_hostname}
+	${stress?check_client_access hash:/etc/postfix/client_ips_custom check_client_access cidr:/etc/postfix/client_ips_custom.cidr check_client_access pcre:/etc/postfix/client check_client_access hash:/etc/postfix/allowed_ips.hash check_client_access hash:/etc/postfix/blocked_ips.hash check_client_access pcre:/etc/postfix/dottld}
+	${stress?check_helo_mx_access hash:/etc/postfix/blocked_mx}
+	${stress?check_helo_access pcre:/etc/postfix/dottld}
+	
+smtpd_sender_restrictions =
+	permit_mynetworks
+	permit_sasl_authenticated
+	
+smtpd_recipient_restrictions =
+	reject_unknown_recipient_domain
+	reject_non_fqdn_recipient
+	check_recipient_access hash:/etc/postfix/recipient_reject-only_custom
+	permit_mynetworks
+	reject_authenticated_sender_login_mismatch
+	permit_sasl_authenticated
+	reject_unauth_destination
+	reject_unauth_pipelining
+	check_sender_access hash:/etc/postfix/check_local_domain_spf
+	check_recipient_access hash:/etc/postfix/recipient_access_custom check_recipient_access hash:/etc/postfix/recipient_access check_recipient_access pcre:/etc/postfix/recipients
+	permit_dnswl_client wl-ip.scrolloutf1.local=127.2.100.2
+	permit_rhswl_client wl-domain.scrolloutf1.local=127.1.100.2
+	reject_rhsbl_helo bl-domain.scrolloutf1.local=127.1.0.2
+	reject_rhsbl_sender bl-domain.scrolloutf1.local=127.1.0.2
+	reject_rhsbl_reverse_client bl-domain.scrolloutf1.local=127.1.0.2
+	permit_dnswl_client wl-ip.rbl.scrolloutf1.com=127.2.100.2
+	permit_rhswl_client wl-domain.rbl.scrolloutf1.com=127.1.100.2
+	check_policy_service unix:private/policy-spf
+	check_sender_access pcre:/etc/postfix/sndr
+	reject_non_fqdn_sender
+	reject_unknown_sender_domain
+	reject_invalid_hostname
+	reject_unlisted_sender
+	check_sender_access hash:/etc/postfix/sender
+	check_sender_access hash:/etc/postfix/sender_access
+	${stress:check_client_access hash:/etc/postfix/client_ips_custom check_client_access cidr:/etc/postfix/client_ips_custom.cidr check_client_access pcre:/etc/postfix/client check_client_access hash:/etc/postfix/allowed_ips.hash check_client_access hash:/etc/postfix/blocked_ips.hash}
+	check_sender_mx_access hash:/etc/postfix/blocked_ips.hash
+	check_sender_ns_access hash:/etc/postfix/blocked_ips.hash
+	# ${stress?check_helo_mx_access hash:/etc/postfix/blocked_mx}
+	${stress:check_client_access pcre:/etc/postfix/dottld}
+	xSHOSTNAMEx
+	cidr:/etc/postfix/client.cidr
+	check_policy_service unix:private/policy
+
+policy_time_limit = 3600s
+policy-spf_time_limit = 3600s
+sign_time_limit = 3600s
+127.0.0.1:10021_time_limit = 3600s
+
+xSIPx
+
+smtpd_data_restrictions =
+	permit_mynetworks
+	permit_sasl_authenticated
+
+smtpd_end_of_data_restrictions =
+	# check_policy_service inet:127.0.0.1:10031
+	permit_mynetworks
+	permit_sasl_authenticated
+
+header_checks = pcre:/etc/postfix/header_custom pcre:/etc/postfix/header
+smtp_header_checks = pcre:/etc/postfix/header_custom pcre:/etc/postfix/header_smtp
+body_checks = pcre:/etc/postfix/body_custom pcre:/etc/postfix/body
+content_filter = smtp-amavis:[127.0.0.1]:10024
+# masquerade_domains = $mydomain
+local_transport = error:local mail delivery is disabled
+smtpd_delay_reject = ${stress?no}${stress:yes}
+queue_run_delay = ${stress?5}${stress:2}m
+minimal_backoff_time = ${stress?5}${stress:2}m
+maximal_backoff_time = ${stress?10}${stress:4}m
+mydomain = xDOMAINx
+soft_bounce=no
+smtpd_junk_command_limit = ${stress?1}${stress:60}
+smtpd_soft_error_limit = ${stress?1}${stress:6}
+smtpd_error_sleep_time = ${stress?0}${stress:4}s
+smtpd_hard_error_limit = ${stress?1}${stress:6}
+maximal_queue_lifetime = ${stress?7}${stress:6}d
+bounce_queue_lifetime = ${stress?1}${stress:3}h
+sender_dependent_relayhost_maps = hash:/etc/postfix/relayhost_maps
+sender_dependent_default_transport_maps = hash:/etc/postfix/assips_maps tcp:[127.0.0.1]:10020
+smtp_sender_dependent_authentication = yes
+
+smtpd_reject_footer =
+ For assistance, see web-here or contact tel-here.
+ Please provide the following information in your problem report:
+ Time: ($localtime), Client: ($client_address), Server: ($server_name).
+
+smtpd_sender_login_maps = hash:/etc/postfix/login_maps
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_authenticated_header = yes
+enable_long_queue_ids = ${stress?no}${stress:yes}
+
+sender_bcc_maps = pcre:/etc/postfix/sender_bcc_custom.pcre hash:/etc/postfix/sender_bcc
+recipient_bcc_maps = pcre:/etc/postfix/recipient_bcc_custom.pcre hash:/etc/postfix/recipient_bcc
+
+disable_vrfy_command = yes
+
+smtpd_restriction_classes = restrictive, permissive, check_local_domain_spf
+restrictive = reject
+permissive = permit
+check_local_domain_spf = check_policy_service unix:private/policy-spf
+
+hopcount_limit = 30

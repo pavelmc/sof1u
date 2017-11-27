@@ -1,0 +1,8 @@
+<b>Domain</b> <br>
+Input the domain name you want to protect in the first field<br />
+In the second field input the real email server as a hostname, domain or the [ip.add.re.ss] <br />
+Scrollout F1 will receive emails for the inputed domain, will scan the emails and forward them to the real email server.<br />
+<br />
+In this case: <br />
+<li>your domain is: <?= $domains[$count] ?></li>
+<li>your email server is: <?= $transport[$count] ?></li>

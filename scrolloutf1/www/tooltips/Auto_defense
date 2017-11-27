@@ -1,0 +1,8 @@
+<b>Auto defense for SMTP, SSH, HTTP(s):</b><br />
+Blocks IP addresses for some time based on the maximum number of:<br />
+<li>spam occurrences</li>
+<li>bounce occurrences</li>
+<li>malware occurrences</li>
+<li>various limits exceeded repeatedly</li>
+<li>wrong authentication occurrences</li>
+<br />

@@ -1,0 +1,29 @@
+
+### WHITE LIST trusted host names ###
+/\.yahoodns\.com$/	  OK
+/\.outlook\.com$/	  OK
+/\.hotmail\.com$/	  OK
+/\.google\.com$/	   OK
+/\.yahoo\.[a-z]{2,3}$/		OK
+/\.gmail\.com$/		OK
+/\.microsoft\.com$/		OK
+/\.linkedin\.com$/		OK
+/\.twitter\.com$/		OK
+/\.ebay\.com$/		OK
+/\.paypal\.com$/		OK
+
+### BLACK LIST untrusted host names for business ###
+/.*friends.*\.[a-z]{2,3}$/		xMESSAGEx
+/.*dating.*\.[a-z]{2,3}$/		xMESSAGEx
+/.*bingo.*\.[a-z]{2,3}$/		xMESSAGEx
+/.*casino.*\.[a-z]{2,3}$/		xMESSAGEx
+/.*porn.*\.[a-z]{2,3}$/		xMESSAGEx
+/.*online.*\.[a-z]{2,3}$/		xMESSAGEx
+/.*million.*/				xMESSAGEx
+/.*cash.*/				xMESSAGEx
+/.*group.*/				xMESSAGEx
+/.*money.*/				xMESSAGEx
+
+### Block dynamic hosts
+/([0-9]{7,}|[0-9\.-_]{1,}range[0-9\.-_]{1,}|[0-9\.-_]{1,}ip[0-9\.-_]{1,}|rev|isdn|sta|dyn|unassigned|dial|modem|wireless|wifi|gprs|cdma|multi|dedicated|client|colo|share|static|subnet|broadband|in-addr|dhcp|ppp|pool|cable|static|dsl|dynamic|[0-9]{1,3}[-\._]{1,}[a-z]{,2}[0-9]{1,3}[-\._]{1,}[a-z]{,2}[0-9]{1,3}.*[a-z]|[a-z].*[0-9]{1,3}[-\._]{1,}[a-z]{,2}[0-9]{1,3}[-\._]{1,}[a-z]{,2}[0-9]{1,3}).*\..*\..*/ xMESSAGEx
+/\..*[0-9]{3,}.*\..*[0-9]{3,}.*\..*[a-z0-9]{4,}.*\.[a-z]{2,3}$/				xMESSAGEx

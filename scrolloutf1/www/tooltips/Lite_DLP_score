@@ -1,0 +1,7 @@
+<b>Lite DLP score</b><br />
+Score: 1-9 (10 = disabled)<br />
+An outgoing email is blocked in case that 
+the total number of expressions matched in a document or email is<br />
+greater or equal to SCORE number.<br />
+<br />
+The expressions are inputed in txt files, in the shared folder mentioned in COLLECTOR > Lite DLP <br />

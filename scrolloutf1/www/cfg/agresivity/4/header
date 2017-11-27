@@ -1,0 +1,19 @@
+
+#####################################################
+# AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
+#####################################################
+
+### Fix forged Received headers misfiring RBL checks
+if /^Received:\s+from\s+.+\s+\(([he]+lo=|[he]+lo)\s+.+\s+\[/
+/^(Received:\s+from)\s+(.+)\s+\(([he]+lo=|[he]+lo)\s+(.+)\s+(\[.+\])\)(.*)/     REPLACE $1 $4 ($2 $5)$6
+endif
+
+if /^Subject: /
+/^Subject:.*include.*\@.*\..*$/ REJECT Remove the email address from Subject field!
+/(^Subject: )  *(.*)  */ REPLACE $1$2
+/^Subject: .*not filter/ filter smtp-amavis:[127.0.0.1]:10026
+endif
+
+### potential clsid hidden file extensions
+/.*Content-(Disposition|Type).*name=.*\.\{.*\}/ warn
+/(name|filename)=.*\.\{.*\}/ warn

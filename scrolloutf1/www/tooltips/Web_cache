@@ -1,0 +1,10 @@
+<b>Web cache</b><br />
+Aggressive or Permissive levels increase or decrease:<br />
+<li> cache size</li>
+<li> cache retention</li>
+<li> multiplication factor for original expiration</li>
+Note: https caching is not possible for public websites.<br />
+Example: <br />
+Web cache level 1 provides more recent/fresh data (<=1 day): short period of retention<br />
+Web cache level 5 provides older data (<=5 days): long period of retention<br />
+Web cache level 8 and 9 force retention for private data.<br />

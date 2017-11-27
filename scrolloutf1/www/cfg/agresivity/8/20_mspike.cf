@@ -1,0 +1,58 @@
+# Spam sources
+header		__RCVD_IN_MSPIKE	eval:check_rbl('mspike-lastexternal', 'bl.mailspike.net.')
+tflags		__RCVD_IN_MSPIKE	net 
+
+# Bad senders
+header		__RCVD_IN_MSPIKE_Z	eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.2$')
+describe	__RCVD_IN_MSPIKE_Z	Spam wave participant
+tflags		__RCVD_IN_MSPIKE_Z	net
+
+header		RCVD_IN_MSPIKE_L5	eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.10$')
+describe	RCVD_IN_MSPIKE_L5	Very bad reputation (-5)
+tflags		RCVD_IN_MSPIKE_L5	net
+
+header		RCVD_IN_MSPIKE_L4	eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.11$')
+describe	RCVD_IN_MSPIKE_L4	Bad reputation (-4)
+tflags		RCVD_IN_MSPIKE_L4	net
+
+header		RCVD_IN_MSPIKE_L3	eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.12$')
+describe	RCVD_IN_MSPIKE_L3	Low reputation (-3)
+tflags		RCVD_IN_MSPIKE_L3	net
+
+header		RCVD_IN_MSPIKE_L2	eval:check_rbl_sub('mspike-lastexternal', '^127\.0\.0\.13$')
+describe	RCVD_IN_MSPIKE_L2	Suspicious reputation (-2)
+tflags		RCVD_IN_MSPIKE_L2	net
+
+# Good senders
+header		RCVD_IN_MSPIKE_H5	eval:check_rbl_sub('mspikeg-firsttrusted', '^127\.0\.0\.20$')
+describe	RCVD_IN_MSPIKE_H5	Excellent reputation (+5)
+tflags		RCVD_IN_MSPIKE_H5	nice net
+
+header		RCVD_IN_MSPIKE_H4	eval:check_rbl_sub('mspikeg-firsttrusted', '^127\.0\.0\.19$')
+describe	RCVD_IN_MSPIKE_H4	Very Good reputation (+4)
+tflags		RCVD_IN_MSPIKE_H4	nice net
+
+header		RCVD_IN_MSPIKE_H3	eval:check_rbl_sub('mspikeg-firsttrusted', '^127\.0\.0\.18$')
+describe	RCVD_IN_MSPIKE_H3	Good reputation (+3)
+tflags		RCVD_IN_MSPIKE_H3	nice net
+
+header		RCVD_IN_MSPIKE_H2	eval:check_rbl_sub('mspikeg-firsttrusted', '^127\.0\.0\.17$')
+describe	RCVD_IN_MSPIKE_H2	Average reputation (+2)
+tflags		RCVD_IN_MSPIKE_H2	nice net
+
+# *_L and *_Z may overlap, so account for that
+meta		__RCVD_IN_MSPIKE_LOW	RCVD_IN_MSPIKE_L5 || RCVD_IN_MSPIKE_L4 || RCVD_IN_MSPIKE_L3 || RCVD_IN_MSPIKE_L2
+meta		RCVD_IN_MSPIKE_ZBI		__RCVD_IN_MSPIKE_Z && !__RCVD_IN_MSPIKE_LOW
+
+# Scores 
+score		RCVD_IN_MSPIKE_ZBI		1.5
+
+score		RCVD_IN_MSPIKE_L5		2.0
+score		RCVD_IN_MSPIKE_L4		1.5
+score		RCVD_IN_MSPIKE_L3		1.0
+score		RCVD_IN_MSPIKE_L2		0.5
+
+score		RCVD_IN_MSPIKE_H2		-0.5
+score		RCVD_IN_MSPIKE_H3		-1.0
+score		RCVD_IN_MSPIKE_H4		-1.5
+score		RCVD_IN_MSPIKE_H5		-2.0

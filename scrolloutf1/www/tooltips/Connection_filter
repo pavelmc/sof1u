@@ -1,0 +1,12 @@
+<b>Connection filter</b><br />
+This filter attempts to block the junk messages before they reach this system.
+<br /><br />
+RBL & DNSBL<br />
+Check Sender IP allows to weigh black/whitelists providers.<br />
+<br />
+The threshold = count all providers. In this example is 3:<br />
+blacklist.provider.com<br />
+blacklist.provider.com*2<br />
+whitelist.provider.com*-2<br />
+<br />
+<b>Note:</b> For business/commercial use some providers ask for a fee. Read their ToS!

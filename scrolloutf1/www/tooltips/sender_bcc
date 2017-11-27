@@ -1,0 +1,4 @@
+<b>Backup outgoing:</b><br/>
+Outgoing messages from <?= $domains[$count] ?> can be BCC-ed to a mailbox@domain.com as follows:<br/>
+<ul>From a specific sender: From Sender@<?= $domains[$count] ?> to ANYWHERE</ul>
+<ul>From any sender: From @<?= $domains[$count] ?> to ANYWHERE</ul>

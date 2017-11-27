@@ -1,0 +1,17 @@
+<b>Internal DNS Server</b>
+</br>
+                                <div id="caching" style="float: left; padding: 5px 5px; margin: 5px 5px; border-radius: 5px; word-wrap: break-word;">
+
+                                <div>
+                                <li> Some RBL services are limited for free usage (i.e.: 100,000-300,000 queries/day).</li> 
+                                <li> They may charge fees when limits are reached, but not retroactively.</li>
+                                <br/>
+                                </div>
+                                <div>
+                                You may use internal DNS server to train spam detection (for few days after initial installation) or
+                                when spam detection is poor.<br/>
+                                With Training Days option, you can select when to use internal DNS and improve Bayes training.<br/>
+                                </div>
+
+                                </div>
+

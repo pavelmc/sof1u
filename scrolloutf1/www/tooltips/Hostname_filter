@@ -1,0 +1,3 @@
+<b>Hostname filter</b><br />
+Scores or blocks the message based on the sender hostname pattern: wifi, dial-up, dynamic etc.<br />
+Protection against popular forged domains like (fake) yahoo.com, gmail.com, att.com etc.

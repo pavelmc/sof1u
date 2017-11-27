@@ -1,0 +1,18 @@
+use strict;
+
+#
+# Place your configuration directives here.  They will override those in
+# earlier files.
+#
+# See /usr/share/doc/amavisd-new/ for documentation and examples of
+# the directives you can use in this file
+#
+
+$storage_redis_ttl = 3*24*3600;  # 3 days for pen pals records
+@storage_redis_dsn = ( { server => '127.0.0.1:6379',  db_id => 1 } );
+$redis_logging_queue_size_limit = 100;
+$redis_logging_key = 'amavis-log';
+$enable_ip_repu = 1;
+
+#------------ Do not modify anything below this line -------------
+1;  # ensure a defined return

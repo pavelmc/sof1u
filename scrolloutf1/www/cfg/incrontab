@@ -1,0 +1,7 @@
+/var/www/security.cfg IN_MODIFY /var/www/bin/scrollout.sh security
+/var/www/codes.cfg IN_MODIFY /var/www/bin/scrollout.sh codes
+/var/www/collector.cfg IN_MODIFY /var/www/bin/scrollout.sh collector
+/var/www/traffic.cfg IN_MODIFY /var/www/bin/scrollout.sh traffic
+/var/www/countries.cfg IN_MODIFY /var/www/bin/runcountries.sh reload
+/etc/postfix/sndr IN_CLOSE_WRITE,IN_NO_LOOP postfix reload
+# /etc/spamassassin/20_wb.cf IN_CLOSE_WRITE,IN_NO_LOOP /etc/init.d/amavis restart

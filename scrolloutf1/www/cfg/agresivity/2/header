@@ -1,0 +1,18 @@
+
+#####################################################
+# AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
+#####################################################
+
+### Fix forged Received headers misfiring RBL checks
+if /^Received:\s+from\s+.+\s+\(([he]+lo=|[he]+lo)\s+.+\s+\[/
+/^(Received:\s+from)\s+(.+)\s+\(([he]+lo=|[he]+lo)\s+(.+)\s+(\[.+\])\)(.*)/     REPLACE $1 $4 ($2 $5)$6
+endif
+
+if /^Subject: /
+/^Subject:.*include.*\@.*\..*$/ REJECT Remove the email address from Subject field!
+/(^Subject: )  *(.*)  */ REPLACE $1$2
+/^Subject: .*not filter/ filter smtp-amavis:[127.0.0.1]:10026
+endif
+
+### Attachment
+/(file)?name\s*?=.*(\.(\{.*\}|php|asp|html?|ade|adp|app|asp|bas|bat|cer|chm|cmd|com|cpl|crt|csh|exe|fxp|hlp|hta|inf|ins|isp|its|js|jse|ksh|[lx]nk|mad|maf|mag|mam|maq|mar|mas|mat|mau|mav|maw|mda|mdb|mde|mdt|mdw|mdz|msc|msi|msp|mst|ops|pcd|pif|prf|prg|pst|reg|scf|scr|sct|shb|shs|tmp|url|vb|vbe|vbs|vsmacros|vss|vst|vsw|ws|wsc|wsf|wsh|avi|mov|divx|qt|m[13][vu]|mp[veag0-9]|wm[avd]?|wa[xv]|midi?|r[mia]|a[si][xf][fc]?|au|snd|ivf|wmz|wvx|wpl|avi|mov|divx|qt|m[13][vu]|mp[veag0-9]|wm[avd]?|wa[xv]|midi?|r[mia]|a[si][xf][fc]?|au|snd|ivf|wmz|wvx|wpl)\.?)"?;?\s*?$/               xMESSAGEx

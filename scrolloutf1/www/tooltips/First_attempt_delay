@@ -1,0 +1,3 @@
+<b>First attempt delay</b><br />
+Eliminates a large amount of junk emails sent by infected or hijacked computers by<br />
+forcing the sender system to retry at its first attempt. Unlike email servers, computers don't retry.<br />

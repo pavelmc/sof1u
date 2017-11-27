@@ -1,0 +1,10 @@
+<b>Mailbox</b><br />
+First, Scrollout F1 will quarantine junk emails to this address.<br />
+Second, It will connect via IMAP to this mailbox, fetch and learn:
+<li>Legit emails and whitelist sender domain from Mailbox Legit Folder</li>
+<li>Spam emails and blacklist sender address from Mailbox Spam Folder</li>
+<br />
+Create a mailbox on your real email server and input the address here.<br />
+i.e.: spam.collector@mydomain.com.<br />
+Connect or attach the collector mailbox to your MS Outlook client or other IMAP email client.<br />
+You may use a web-mail GUI or even an external mailbox on yahoo.com or gmail.com (not recommended).

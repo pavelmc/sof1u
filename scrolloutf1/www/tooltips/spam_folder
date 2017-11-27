@@ -1,0 +1,11 @@
+<b>Spam folder</b><br />
+In the collector mailbox create a separed folder using your MS Outlook, webmail or other IMAP client.<br />
+e.g. "BAD folder"<br />
+Place all junk emails you want to block in this folder.<br />
+Scrollout F1 will connect via IMAP service to collector mailbox, fetch, learn and block all emails from BAD folder.<br />
+i.e.:<br />
+<li>BAD</li>
+<li>Inbox.BAD in case is a subfolder under Inbox folder</li>
+<li>Bulk Mail in case you want to use "Spam folder" from your Yahoo account</li>
+<br />
+<b>Note: never use important folders like Inbox or Sent Items. <u>The messages older than 7 days are deleted</u>.</b>

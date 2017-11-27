@@ -1,0 +1,4 @@
+/^postmaster\@xDOMAINx/	OK
+/^hostmaster\@xDOMAINx/	OK
+/^abuse\@xDOMAINx/	OK
+/^webmaster\@xDOMAINx/	OK

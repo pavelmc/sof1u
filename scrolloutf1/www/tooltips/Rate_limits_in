@@ -1,0 +1,11 @@
+<b>Rate limits for incoming SMTP:</b><br />
+The maximum number of:<br />
+<li>connections that an SMTP client may make simultaneously.</li>
+<li>connections that an SMTP client may make in the time interval.</li>
+<li>message delivery requests that an SMTP client may make in the time interval.</li>
+<li>message delivery requests that an SMTP client may make in the time interval.</li>
+<li>new TLS sessions (without using the TLS session cache) that an SMTP client may negotiate in the time interval.</li>
+<br />
+When value is <= 3 (not recommended), expensive tests (e.g.: greylist) are taking place
+<br />
+requiring clients to disconnect before deliver the first message.

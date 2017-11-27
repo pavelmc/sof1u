@@ -1,0 +1,10 @@
+<b>Trust networks</b><br />
+Input one or more subnets in CIDR format to allow relay and sign with DKIM.
+<br />
+Important: Do not trust your router/firewall by including its IP here.<br/>
+By doing that, you will open a relay to Internet world.<br />
+<ul>Examples:</ul>
+<ul>72.150.150.1/32,72.1.1.0/24</ul>
+<ul>!72.1.1.1/32,72.1.1.0/24</ul>
+<ul>Last example above allows any IP in 72.1.1.0/24, except 72.1.1.1</ul>
+

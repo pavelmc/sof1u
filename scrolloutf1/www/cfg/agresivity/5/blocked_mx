@@ -1,0 +1,10 @@
+0						DEFER Broadcast address in MX record or Helo command
+10						DEFER Internal IP in MX record or Helo command
+127						DEFER Localhost IP in MX record or Helo command
+192.168					DEFER Internal IP in MX record or Helo command
+172.16					DEFER Internal IP in MX record or Helo command
+169.254					DEFER Internal IP in MX record or Helo command
+224						DEFER Reserved IP in MX record or Helo command
+240						DEFER Reserved IP in MX record or Helo command
+248						DEFER Reserved IP in MX record or Helo command
+dev.null				DEFER Null MX record or Helo command

@@ -1,0 +1,19 @@
+<b>BLACKLIST</b><br/>
+<br/>
+Works for any SMTP Senders (in Return-Path)<br/>
+Works for any From:<br/>
+Overrides most rules and filters.<br/>
+<br/>
+Supported Formats: <br/>
+<ul>sender@domain.com - the exact sender address.</ul>
+<ul>@domain.com - any sender address @domain.com.</ul>
+<ul>.domain.com - any sender address @any-sub.domain.com.</ul>
+<ul>domain.com - any sender address @any-domain-that-ends-with-domain.com.</ul>
+<br/>
+Effect on SMTP rules (1st layer)<br/>
+<ul>Rejects the sender at SMTP.</ul>
+<br/>
+Effect on SPAM filter (3rd layer)<br/>
+<ul>Any Sender address found in the list is marked as SPAM.</ul>
+<ul>Any From address found in the list is marked as SPAM.</ul>
+<br/>

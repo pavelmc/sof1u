@@ -1,0 +1,63 @@
+# URI domains first saw within last 1-2 days
+
+urirhssub		URI_HK_2	hostkarma.junkemailfilter.com. A 127.0.2.1
+body			URI_HK_2	eval:check_uridnsbl('URI_HK_2')
+describe		URI_HK_2	Contains a domain first saw within last 1-2 days
+tflags			URI_HK_2	net
+
+# URI domains first saw within last 10 days
+
+urirhssub		URI_HK_10	hostkarma.junkemailfilter.com. A 127.0.2.2
+body			URI_HK_10	eval:check_uridnsbl('URI_HK_10')
+describe		URI_HK_10	Contains a domain first saw within last 10 days
+tflags			URI_HK_10	net
+
+# URI domains registered less than 5 days ago
+
+urirhssub		URI_SEM_5	fresh.spameatingmonkey.net. A 2
+body			URI_SEM_5	eval:check_uridnsbl('URI_URI_SEM_5')
+describe		URI_SEM_5	Contains a domain registered less than 5 days ago
+tflags			URI_SEM_5	net
+
+
+# DKIM domains first saw within last 1-2 days
+
+askdns          DKIM_HK_2		_DKIMDOMAIN_.hostkarma.junkemailfilter.com. A 127.0.2.1
+describe        DKIM_HK_2		Sender's domain first saw within last 1-2 days
+tflags          DKIM_HK_2		net
+
+# DKIM domains first saw within last 10 days
+
+askdns          DKIM_HK_10		_DKIMDOMAIN_.hostkarma.junkemailfilter.com. A 127.0.2.2
+describe        DKIM_HK_10		Sender's domain first saw within last 10 days
+tflags          DKIM_HK_10		net
+
+# DKIM domains registered less than 5 days ago
+
+askdns          DKIM_SEM_5		_DKIMDOMAIN_.fresh.spameatingmonkey.net. A 127.0.0.2
+describe        DKIM_SEM_5		Sender's domain registered less than 5 days ago
+tflags          DKIM_SEM_5		net
+
+# URI METAs
+
+meta		URI_HK2_SEM5		URI_HK_2 && URI_SEM_5
+describe	URI_HK2_SEM5		Contains a domain registered in the last 2 days
+
+# URI Scores 
+score		URI_HK_2			0 1.5 0 1.0
+score		URI_HK_10			0 1.0 0 0.5
+score		URI_SEM_5			0 1.5 0 1.0
+
+score		URI_HK2_SEM5		0 1.5 0 1.0
+
+# DKIM METAs
+meta		DKIM_HK2_SEM5		DKIM_HK_2 && DKIM_SEM_5
+describe	DKIM_HK2_SEM5		Sender domain registered in the last 2 days
+
+# DKIM Scores
+score           DKIM_HK_2		0 1.5 0 1.0
+score           DKIM_HK_10		0 1.0 0 0.5
+score			DKIM_SEM_5		0 1.5 0 1.0
+
+score			DKIM_HK2_SEM5	0 1.5 0 1.0
+

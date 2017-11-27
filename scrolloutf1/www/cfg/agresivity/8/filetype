@@ -1,0 +1,35 @@
+
+$banned_filename_re = new_RE(
+# qr'^UNDECIPHERABLE$',  # is or contains any undecipherable components
+
+  # block certain double extensions anywhere in the base name
+  qr'\.[^./]*\.(exe|vbs|pif|scr|bat|cmd|com|cpl|dll)\.?$'i,
+
+  qr'\{[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}\}?$'i, # Windows Class ID CLSID, strict
+
+  qr'^application/x-msdownload$'i,                  # block these MIME types
+  qr'^application/x-msdos-program$'i,
+  qr'^application/x-dosexec$'i,
+  qr'^application/hta$'i,
+
+## qr'^application/x-msmetafile$'i,	# Windows Metafile MIME type
+## qr'^\.wmf$',				# Windows Metafile file(1) type
+
+# qr'^message/partial$'i, qr'^message/external-body$'i, # rfc2046 MIME types
+
+# [ qr'^\.(Z|gz|bz2)$'           => 0 ],  # allow any in Unix-compressed
+# [ qr'^\.(rpm|cpio|tar)$'       => 0 ],  # allow any in Unix-type archives
+# [ qr'^\.(zip|rar|arc|arj|zoo)$'=> 0 ],  # allow any within such archives
+# [ qr'^application/x-zip-compressed$'i => 0],  # allow any within such archives
+
+	qr'.\.(exe|vbs|pif|scr|bat|cmd|com|cpl)$'i, # banned extension - basic
+	[ qr'^UNDECIPHERABLE$' => 0], # allow UNDECIPHERABLE
+
+	
+# qr'.\.(mim|b64|bhx|hqx|xxe|uu|uue)$'i,  # banned extension - WinZip vulnerab.
+
+  qr'^\.(exe-ms)$',                       # banned file(1) types
+# qr'^\.(exe|lha|tnef|cab|dll)$',         # banned file(1) types
+);
+# See http://support.microsoft.com/default.aspx?scid=kb;EN-US;q262631
+# and http://www.cknow.com/vtutor/vtextensions.htm

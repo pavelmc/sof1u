@@ -1,0 +1,34 @@
+
+urifullnsrhssub	SO_PUB_URIBL_NS_RHAM	REVHAM-uri-ns.rbl.scrolloutf1.com A 127.127.127.127
+body		SO_PUB_URIBL_NS_RHAM	eval:check_uridnsbl('SO_PUB_URIBL_NS_RHAM')
+describe	SO_PUB_URIBL_NS_RHAM	URL's ns address has been reported to REVHAM-uri-ns.rbl.scrolloutf1.com
+tflags		SO_PUB_URIBL_NS_RHAM	net ns
+score		SO_PUB_URIBL_NS_RHAM	0 -0.001 0 -0.001
+
+urirhssub	SO_PUB_URIBL_DOMAIN_RHAM	REVHAM-uri-domain.rbl.scrolloutf1.com A 127.127.127.127
+body		SO_PUB_URIBL_DOMAIN_RHAM	eval:check_uridnsbl('SO_PUB_URIBL_DOMAIN_RHAM')
+describe	SO_PUB_URIBL_DOMAIN_RHAM	URL's domain address has been reported to REVHAM-uri-domain.rbl.scrolloutf1.com
+tflags		SO_PUB_URIBL_DOMAIN_RHAM	net 
+score		SO_PUB_URIBL_DOMAIN_RHAM	0 -0.001 0 -0.001
+
+uridnssub	SO_PUB_URIBL_IP_RHAM	REVHAM-uri-ip.rbl.scrolloutf1.com A 127.127.127.127
+body		SO_PUB_URIBL_IP_RHAM	eval:check_uridnsbl('SO_PUB_URIBL_IP_RHAM')
+describe	SO_PUB_URIBL_IP_RHAM	URL's ip address has been reported to REVHAM-uri-ip.rbl.scrolloutf1.com
+tflags		SO_PUB_URIBL_IP_RHAM	net a
+score		SO_PUB_URIBL_IP_RHAM	0 -0.001 0 -0.001
+
+header		__SO_PUB_SNDR_RHAM	eval:check_rbl('sof1-firsttrusted', 'REVHAM-sndr.rbl.scrolloutf1.com')
+header		SO_PUB_SNDR_RHAM	eval:check_rbl_sub('sof1-firsttrusted', '^127\.27\.127\.127$')
+describe	SO_PUB_SNDR_RHAM	Sender's address has been reported to REVHAM-sndr.rbl.scrolloutf1.com
+score		SO_PUB_SNDR_RHAM	0 -0.001 0 -0.001
+tflags		SO_PUB_SNDR_RHAM	net
+reuse		SO_PUB_SNDR_RHAM
+
+ifplugin Mail::SpamAssassin::Plugin::AskDNS
+
+askdns          SO_PUB_SNDR_DOMAIN_DKIM_RHAM		_DKIMDOMAIN_.REVHAM-dkim.rbl.scrolloutf1.com A 127.127.127.127
+describe        SO_PUB_SNDR_DOMAIN_DKIM_RHAM		Sender's domain DKIM is listed in REVHAM-dkim.rbl.scrolloutf1.com
+tflags          SO_PUB_SNDR_DOMAIN_DKIM_RHAM		net
+score           SO_PUB_SNDR_DOMAIN_DKIM_RHAM		0 -0.001 0 -0.001
+
+endif

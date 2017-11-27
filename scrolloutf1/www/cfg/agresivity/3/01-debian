@@ -1,0 +1,263 @@
+use strict;
+
+#@debug_sender_maps = ( ["test-sender\@$mydomain"] );
+
+# ADMINISTRATORS:
+# Debian suggests that any changes you need to do that should never
+# be "updated" by the Debian package should be made in another file,
+# overriding the settings in this file.
+#
+# The package will *not* overwrite your settings, but by keeping
+# them separate, you will make the task of merging changes on these
+# configuration files much simpler...
+
+#   see /usr/share/doc/amavisd-new/examples/amavisd.conf-default for
+#       a list of all variables with their defaults;
+#   see /usr/share/doc/amavisd-new/examples/amavisd.conf-sample for
+#       a traditional-style commented file  
+#   [note: the above files were not converted to Debian settings!]
+#
+#   for more details see documentation in /usr/share/doc/amavisd-new
+#   and at http://www.ijs.si/software/amavisd/amavisd-new-docs.html
+
+
+# SETTINGS RARELY MODIFIED BY THE LOCAL ADMIN
+
+$ENV{PATH} = $path = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/sbin:/usr/bin:/bin';
+$file   = 'file';
+$gzip   = 'gzip';
+$bzip2  = 'bzip2';
+$lzop   = 'lzop';
+$rpm2cpio   = ['rpm2cpio.pl','rpm2cpio'];
+$cabextract = 'cabextract';
+$uncompress = ['uncompress', 'gzip -d', 'zcat'];
+$unfreeze   = ['unfreeze', 'freeze -d', 'melt', 'fcat']; #disabled (non-free, no security support)
+$arc        = ['nomarch', 'arc'];
+$unarj      = ['arj', 'unarj'];
+$unrar      = ['rar', 'unrar']; #disabled (non-free, no security support)
+$zoo    = 'zoo';
+$lha    = 'lha'; #disabled (non-free, no security support)
+$pax    = 'pax';
+$cpio   = 'cpio';
+$ar     = 'ar';
+$ripole = 'ripole';
+$dspam  = 'dspam';
+
+@decoders = (
+    ['gz',   \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['Z',    \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['tar',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['arj',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['cab',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['rar',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['swf',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['lha',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['lzma', \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['cpio', \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['jar',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['iso',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['deb',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['rpm',  \&Amavis::Unpackers::do_7zip, '7z' ],
+    ['mail', \&Amavis::Unpackers::do_mime_decode],
+    ['F',    \&Amavis::Unpackers::do_uncompress, \$unfreeze],
+    ['Z',    \&Amavis::Unpackers::do_uncompress, \$uncompress],
+    ['gz',   \&Amavis::Unpackers::do_gunzip],
+    ['gz',   \&Amavis::Unpackers::do_uncompress, \$gunzip],
+    ['bz2',  \&Amavis::Unpackers::do_uncompress, \$bunzip2],
+   ['xz',   \&Amavis::Unpackers::do_uncompress,
+            ['xzdec', 'xz -dc', 'unxz -c', 'xzcat'] ],
+   ['lzma', \&Amavis::Unpackers::do_uncompress,
+            ['lzmadec', 'xz -dc --format=lzma',
+             'lzma -dc', 'unlzma -c', 'lzcat', 'lzmadec'] ],
+	['lrz',  \&Amavis::Unpackers::do_uncompress,
+             ['lrzip -q -k -d -o -', 'lrzcat -q -k'] ],
+    ['lzo',  \&Amavis::Unpackers::do_uncompress, \$unlzop],
+	['lz4',  \&Amavis::Unpackers::do_uncompress, ['lz4c -d'] ],
+	[['cpio','tar'], \&Amavis::Unpackers::do_pax_cpio, \$pax],
+    ['rpm',  \&Amavis::Unpackers::do_uncompress, \$rpm2cpio],
+    ['cpio', \&Amavis::Unpackers::do_pax_cpio,   \$pax],
+    ['cpio', \&Amavis::Unpackers::do_pax_cpio,   \$cpio],
+    ['tar',  \&Amavis::Unpackers::do_pax_cpio,   \$pax],
+    ['tar',  \&Amavis::Unpackers::do_pax_cpio,   \$cpio],
+    ['deb',  \&Amavis::Unpackers::do_ar, \$ar],
+    ['zip',  \&Amavis::Unpackers::do_7zip,       ['7z','7za', 'unzip'] ],
+    ['zip',  \&Amavis::Unpackers::do_unzip],
+    ['kmz',  \&Amavis::Unpackers::do_unzip],
+    ['7z',   \&Amavis::Unpackers::do_7zip,       ['7zr','7za','7z'] ],
+    ['rar',  \&Amavis::Unpackers::do_unrar,      \$unrar],
+    ['arj',  \&Amavis::Unpackers::do_unarj,      \$unarj],
+    ['arc',  \&Amavis::Unpackers::do_arc,        \$arc],
+    ['zoo',  \&Amavis::Unpackers::do_zoo,        \$zoo],
+    ['doc',  \&Amavis::Unpackers::do_ole,        \$ripole],
+    ['cab',  \&Amavis::Unpackers::do_cabextract, \$cabextract],
+    ['tnef', \&Amavis::Unpackers::do_tnef_ext,   \$tnef],
+    ['tnef', \&Amavis::Unpackers::do_tnef],
+    ['exe',  \&Amavis::Unpackers::do_executable, \$unrar,\$lha,\$unarj],
+);
+
+
+$map_full_type_to_short_type_re = new_RE(
+    [qr/^empty\z/                       => 'empty'],
+    [qr/^directory\z/                   => 'dir'],
+    [qr/^can't (stat|read)\b/           => 'dat'],  # file(1) diagnostics
+    [qr/^cannot open\b/                 => 'dat'],  # file(1) diagnostics
+    [qr/^ERROR:/                        => 'dat'],  # file(1) diagnostics
+    [qr/can't read magic file|couldn't find any magic files/ => 'dat'],
+    [qr/^data\z/                        => 'dat'],
+
+    [qr/^ISO-8859.*\btext\b/            => 'txt'],
+    [qr/^Non-ISO.*ASCII\b.*\btext\b/    => 'txt'],
+    [qr/^Unicode\b.*\btext\b/i          => 'txt'],
+    [qr/^UTF.* Unicode text\b/i         => 'txt'],
+    [qr/^'diff' output text\b/          => 'txt'],
+    [qr/^GNU message catalog\b/         => 'mo'],
+    [qr/^PGP encrypted data\b/          => 'pgp'],
+    [qr/^PGP armored data( signed)? message\b/ => ['pgp','pgp.asc'] ],
+    [qr/^PGP armored\b/                 =>        ['pgp','pgp.asc'] ],
+
+  ### 'file' is a bit too trigger happy to claim something is 'mail text'
+  # [qr/^RFC 822 mail text\b/           => 'mail'],
+    [qr/^(ASCII|smtp|RFC 822) mail text\b/ => 'txt'],
+
+    [qr/^JPEG image data\b/             => ['image','jpg'] ],
+    [qr/^GIF image data\b/              => ['image','gif'] ],
+    [qr/^PNG image data\b/              => ['image','png'] ],
+    [qr/^TIFF image data\b/             => ['image','tif'] ],
+    [qr/^PCX\b.*\bimage data\b/         => ['image','pcx'] ],
+    [qr/^PC bitmap data\b/              => ['image','bmp'] ],
+    [qr/^SVG Scalable Vector Graphics image\b/ => ['image','svg'] ],
+
+    [qr/^MP2\b/                         => ['audio','mpa','mp2'] ],
+    [qr/^MP3\b/                         => ['audio','mpa','mp3'] ],
+    [qr/\bMPEG ADTS, layer III\b/       => ['audio','mpa','mp3'] ],
+    [qr/^ISO Media, MPEG v4 system\b/   => ['audio','mpa','m4a','m4b'] ],
+    [qr/^FLAC audio bitstream data\b/   => ['audio','flac'] ],
+    [qr/^Ogg data, FLAC audio\b/        => ['audio','oga'] ],
+    [qr/^Ogg data\b/                    => ['audio','ogg'] ],
+
+    [qr/^MPEG video stream data\b/      => ['movie','mpv'] ],
+    [qr/^MPEG system stream data\b/     => ['movie','mpg'] ],
+    [qr/^MPEG\b/                        => ['movie','mpg'] ],
+    [qr/^Matroska data\b/               => ['movie','mkv'] ],
+    [qr/^Microsoft ASF\b/               => ['movie','wmv'] ],
+    [qr/^RIFF\b.*\bAVI\b/               => ['movie','avi'] ],
+    [qr/^RIFF\b.*\banimated cursor\b/   => ['movie','ani'] ],
+    [qr/^RIFF\b.*\bWAVE audio\b/        => ['audio','wav'] ],
+
+### Added by Marius Gologan, for Scrollout F1 gateway
+	[qr/^ACE archive/		=> 'ace' ],
+	[qr/^HTML document, .* text, with very long lines/		=> ['longline','html'] ],
+	[qr/\bUnicode text, with very long lines/				=> ['longline','html','txt'] ],
+	[qr/\bUnicode text/										=> ['html','txt','html'] ],
+	[qr/^ASCII text, with CRLF line terminators/			=> ['malware','asc','txt'] ],
+	[qr/^HTML document, ISO-8859 text, with CRLF line terminators/		=> ['malware','html'] ],
+	[qr/^HTML document, ASCII text, with no line terminators/			=> ['malware','html'] ],
+	[qr/^ASCII text/										=> ['asc','txt'] ],
+	[qr/\bwith very long lines/								=> ['longline','asc','txt','html'] ],
+
+	[qr/\bvery short file/									=> ['nowords','txt'] ],
+	[qr/\bline terminators/									=> ['malware','asc','txt','html'] ],
+	
+	[qr/\bRevision Number: [0-3],.*Number of Pages: [0-1], Number of Words: [0-3], Number of Characters: [0-9],/		=> ['nowords','office','doc'] ],
+	[qr/\bRevision Number: [1-9]*,.*Number of Pages: [1-9]*, Number of Words: [3-9]*, Number of Characters: [1-9]+,/	=> ['office','doc'] ],
+	[qr/\bCode page: 1251, Author: 1, Last Saved By: .*, Name of Creating Application: Microsoft Excel, .* Security: 0/	=> ['malware','nowords','office','xls'] ],
+	[qr/\bCode page: 1251, Author: 1, Template: Normal, Last Saved By: 1,/																	=> ['cyrillic','office'] ],
+	[qr/^Composite Document File V2 Document, Little Endian, .*, Name of Creating Application: Microsoft Excel, Create Time\/Date: .*\b/	=> ['office','xls'] ],
+	[qr/^Composite Document File V2 Document, Little Endian,.*Name of Creating Application: Microsoft Excel,/		=> ['office','xls'] ],
+	[qr/^Composite Document File V2 Document, Little Endian,.*Name of Creating Application: Microsoft Word,/		=> ['office','doc'] ],
+	[qr/\bMicrosoft Excel 20/			=> ['office','xlsx'] ],
+	[qr/\bMicrosoft Word 20/			=> ['office','docx'] ],
+	[qr/\bMicrosoft Excel,/			=> ['office','xls'] ],
+	[qr/\bMicrosoft Office Word,/		=> ['office','doc'] ],
+	[qr/\bMicrosoft Office PowerPoint/	=> ['office','ppt'] ],
+	[qr/\bPDF document,/				=> ['office','pdf'] ],
+	[qr/\b(Microsoft|Office|V2 Document|Excel|Word|PowerPoint|Access)\b/			=> ['office','xls','doc'] ],
+	
+	[qr/Windows Enhanced Metafile/				=> ['image','emf'] ],
+	[qr/^Netpbm PBM\b/							=> ['image','pbm'] ],
+	[qr/^Netpbm PPM\b/							=> ['image','ppm'] ],
+	[qr/^Netpbm PGM\b/							=> ['image','pgm'] ],
+	[qr/\bblock device driver/					=> 'trash'],
+	
+### END
+
+    [qr/^Macromedia Flash data\b/       => 'swf'],
+    [qr/^HTML document/			=> 'html'],
+    [qr/^XML document/           => 'xml'],
+    [qr/^exported SGML document\b/ 		=> 'sgml'],
+    [qr/^PostScript document\b/    		=> 'ps'],
+    [qr/^PDF document\b/                => 'pdf'],
+    [qr/^Rich Text Format data\b/       => 'rtf'],
+    [qr/^Microsoft Office Document\b/i  => 'doc'],  # OLE2: doc, ppt, xls, ...
+    [qr/^Microsoft Installer\b/i        => 'doc'],  # file(1) may misclassify
+    [qr/^ms-windows meta(file|font)\b/i => 'wmf'],
+    [qr/^LaTeX\b.*\bdocument text\b/    => 'lat'],
+    [qr/^TeX DVI file\b/                => 'dvi'],
+    [qr/\bdocument text\b/              => 'txt'],
+    [qr/^compiled Java class data\b/    => 'java'],
+    [qr/^MS Windows 95 Internet shortcut text\b/ => 'url'],
+    [qr/^Compressed Google KML Document\b/ => 'kmz'],
+	[qr/with BOM/						=> 'xml'],
+    [qr/^frozen\b/                      => 'F'],
+    [qr/^gzip compressed\b/             => 'gz'],
+    [qr/^bzip compressed\b/             => 'bz'],
+    [qr/^bzip2 compressed\b/            => 'bz2'],
+    [qr/^xz compressed\b/               => 'xz'],
+    [qr/^lzma compressed\b/             => 'lzma'],
+    [qr/^lzop compressed\b/             => 'lzo'],
+    [qr/^compress'd/                    => 'Z'],
+    [qr/^Zip archive\b/i                => 'zip'],
+    [qr/^7-zip archive\b/i              => '7z'],
+    [qr/^RAR archive\b/i                => 'rar'],
+    [qr/^LHa.*\barchive\b/i             => 'lha'],  # (also known as .lzh)
+    [qr/^ARC archive\b/i                => 'arc'],
+    [qr/^ARJ archive\b/i                => 'arj'],
+    [qr/^Zoo archive\b/i                => 'zoo'],
+    [qr/^(\S+\s+)?tar archive\b/i       => 'tar'],
+    [qr/^(\S+\s+)?cpio archive\b/i      => 'cpio'],
+    [qr/^StuffIt Archive\b/i            => 'sit'],
+    [qr/^Debian binary package\b/i      => 'deb'], # standard Unix archive (ar)
+    [qr/^current ar archive\b/i         => 'a'],   # standard Unix archive (ar)
+    [qr/^RPM\b/                         => 'rpm'],
+    [qr/^(Transport Neutral Encapsulation Format|TNEF)\b/i => 'tnef'],
+    [qr/^Microsoft Cabinet (file|archive)\b/i => 'cab'],
+    [qr/^InstallShield Cabinet file\b/  => 'installshield'],
+
+    [qr/^(uuencoded|xxencoded)\b/i      => 'uue'],
+    [qr/^binhex\b/i                     => 'hqx'],
+    [qr/^(ASCII|text)\b/i               => 'asc'],
+    [qr/^Emacs.*byte-compiled Lisp data/i => 'asc'],  #  BinHex with empty line
+    [qr/\bscript text executable\b/     => 'txt'],
+
+    [qr/^MS Windows\b.*\bDLL\b/                 => ['exe','dll'] ],
+    [qr/\bexecutable for MS Windows\b.*\bDLL\b/ => ['exe','dll'] ],
+    [qr/^MS-DOS executable \(built-in\)/        => 'asc'],  # starts with LZ
+    [qr/^(MS-)?DOS executable\b.*\bDLL\b/       => ['exe','dll'] ],
+    [qr/^MS Windows\b.*\bexecutable\b/          => ['exe','exe-ms'] ],
+    [qr/\bexecutable for MS Windows\b/          => ['exe','exe-ms'] ],
+    [qr/^COM executable for DOS\b/              => 'asc'],  # misclassified?
+    [qr/^DOS executable \(COM\)/                => 'asc'],  # misclassified?
+    [qr/^(MS-)?DOS executable\b(?!.*\(COM\))/   => ['exe','exe-ms'] ],
+    [qr/^PA-RISC.*\bexecutable\b/       => ['exe','exe-unix'] ],
+    [qr/^ELF .*\bexecutable\b/          => ['exe','exe-unix'] ],
+    [qr/^COFF format .*\bexecutable\b/  => ['exe','exe-unix'] ],
+    [qr/^executable \(RISC System\b/    => ['exe','exe-unix'] ],
+    [qr/^VMS\b.*\bexecutable\b/         => ['exe','exe-vms'] ],
+    [qr/\bexecutable\b/i                => 'exe'],
+
+    [qr/\bshared object, /i             => 'so'],
+    [qr/\brelocatable, /i               => 'o'],
+    [qr/\btext\b/i                      => 'txt'],
+    [qr/^/                              => 'dat'],  # catchall
+  );
+
+
+@virus_name_to_spam_score_maps =
+  (new_RE(
+    [ qr'^Structured\.(SSN|CreditCardNumber)\b'				=> 0.1 ],
+    [ qr'^(Heuristics\.)?Phishing\.'						=> 0.1 ],
+    [ qr'^(Email|HTML)\.Phish'								=> 0.1 ],
+    [ qr'^Email\.Spammail\b'								=> 0.1 ],
+  ));
+
+1;  # ensure a defined return

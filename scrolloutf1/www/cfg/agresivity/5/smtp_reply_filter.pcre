@@ -1,0 +1,4 @@
+
+# Do not bounce the spam from remote server
+/^55[04] 5\.7\.1 Message .* Content / 440 4.7.1 Message rejected as spam
+/^55[04] .* spam / 444 Message rejected as spam

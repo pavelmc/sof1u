@@ -1,0 +1,4 @@
+
+# Do not bounce custom 5xx codes
+/^5[0-9][0-9] / 400 4.0.0 Message rejected with 5xx error code
+/5\.7\.1 .* Spam collector pollution attempts are forbidden/ 440 4.7.1 Message rejected from another Scrollout Collector

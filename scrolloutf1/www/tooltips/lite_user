@@ -1,0 +1,9 @@
+<b>Windows Domain & User</b><br />
+
+<li> Provide full permissions for the account used here 
+<?= !empty($values['user_domain']) ? (''. $values['user_domain'] . '\\') : '' ?>
+<?= !empty($values['folder_username']) ? (''. $values['folder_username'] .'') : '' ?>
+<?= !empty($values['share']) ? ('<br />over the shared folder \\' . $values['share'] . '') : '' ?>.</li> 
+<li> Provide write permissions for Group Account(s) which includes managers and team leaders.</li> 
+
+

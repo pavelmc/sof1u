@@ -1,0 +1,12 @@
+rawbody         _EMB_IMG                /\bsrc\s*?=(3D)?\s*?["']?cid:/i
+describe        _EMB_IMG                Embedded image
+score           _EMB_IMG                0.5
+rawbody         _LARGE_EMB_IMG          /(<img .*(width|height)=(3D)?\s*?["']?[6-9][0-9]{2,}["']? |[^ ](width|height)=(3D)?\s*?["']?[6-9][0-9]{2,}["']?\s*?\bsrc\s*?=(3D)?\s*?["']?cid:)/i
+describe        _LARGE_EMB_IMG          Large image
+score           _LARGE_EMB_IMG          1.5
+rawbody         _XLARGE_EMB_IMG         /(<img .*( width|height)=(3D)?\s*?["']?[0-9]{4,}["']? |[^ ](width|height)=(3D)?\s*?["']?[0-9]{4,}["']?\s*?\bsrc\s*?=(3D)?\s*?["']?cid:)/i
+describe        _XLARGE_EMB_IMG         eXtraLarge image
+score           _XLARGE_EMB_IMG         1.5
+rawbody         _EXTERNAL_IMG           /\bsrc\s*?=(3D)?\s*?["']?(http|ftp)s?:\/\/.*\..*\/.*\.(jpe?g|bmp|png|gif|psd|tiff?|pdf|emf|wmf|jpe|dib|rle|bmz|gfa|emz|jfif|wmz|pcz|cgm|eps|pi?ct|wpg)["']?/i
+describe        _EXTERNAL_IMG           Linked image
+score           _EXTERNAL_IMG           1.5

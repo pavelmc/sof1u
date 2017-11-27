@@ -1,0 +1,7 @@
+<b>Header & attachments</b><br />
+A filter based on the attachments of the email:<br />
+<li> executables</li>
+<li> archives</li>
+<li> multimedia</li>
+<li> double or hidden extensions</li>
+It also attempt to validate the message based on its header

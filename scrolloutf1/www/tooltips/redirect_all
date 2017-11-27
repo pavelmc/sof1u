@@ -1,0 +1,8 @@
+<b>REDIRECT emails:</b><br/>
+Messages received for recipient@<?= $domains[$count] ?> can be delivered to:<br/>
+<ul>user@other-domain.com</ul>
+<br/>
+REDIRECT is useful when all mails sent to a domain have to be forwared to one single user in another domain.<br/>
+Expected result:<br/>
+Any email to @domain.com will be sent to user@other-domain.com. <br/>
+<br/>

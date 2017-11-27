@@ -1,0 +1,30 @@
+
+sender_canonical_maps = pcre:/etc/postfix/sender_replace.pcre
+
+recipient_canonical_maps = pcre:/etc/postfix/recipient_replace.pcre tcp:localhost:10002
+recipient_canonical_classes= envelope_recipient,header_recipient
+
+# Anti flood parameters: 
+
+anvil_rate_time_unit = ${stress?240}${stress:60}s
+
+smtpd_client_connection_count_limit = ${stress?4}${stress:9}
+# The maximum number of connections that an SMTP client may make simultaneously.
+
+smtpd_client_connection_rate_limit = ${stress?45}${stress:90}
+# The maximum number of connections that an SMTP client may make in the time interval specified with anvil_rate_time_unit (default: 60s).
+
+smtpd_client_message_rate_limit = ${stress?45}${stress:90}
+# The maximum number of message delivery requests that an SMTP client may make in the time interval specified with anvil_rate_time_unit (default: 60s).
+
+smtpd_client_recipient_rate_limit = ${stress?45}${stress:90}
+# The maximum number of recipient addresses that an SMTP client may specify in the time interval specified with anvil_rate_time_unit (default: 60s).
+
+smtpd_client_new_tls_session_rate_limit = ${stress?45}${stress:90}
+# The maximum number of new TLS sessions (without using the TLS session cache) that an SMTP client may negotiate in the time interval specified with anvil_rate_time_unit (default: 60s).
+
+postscreen_access_list = permit_mynetworks,
+	cidr:/etc/postfix/postscreen_access_custom.cidr cidr:/etc/postfix/postscreen_access.cidr
+
+# smtpd_authorized_xclient_hosts = $mynetworks
+smtpd_authorized_xforward_hosts = $mynetworks

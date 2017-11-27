@@ -1,0 +1,10 @@
+<b>Legit folder</b><br />
+In the collector mailbox create a separed folder using your MS Outlook, webmail or other IMAP client.<br />
+e.g. "GOOD folder"<br />
+Place all legit (HAM) emails you want to allow in this folder (invoices, payments etc).<br />
+Scrollout F1 will connect via IMAP service to collector mailbox, fetch, learn and allow all emails from GOOD folder.<br />
+i.e.:<br />
+<li>GOOD</li>
+<li>Inbox.GOOD in case is a subfolder under Inbox folder</li>
+<br />
+<b>Note: never use important folders like Inbox or Sent Items. <u>The messages older than 7 days are deleted</u>.</b>

@@ -1,0 +1,7 @@
+
+# workaround not recognized commands, possibly caused by some firewalls
+/^550 5\.7\.1 Command rejected/ 400 4.7.1 Command rejected
+/^500 unrecogni[zs]ed command/ 400 Message not accepted by Exim. Retrying later
+/^500 5\.3\.3 Unrecogni[zs]ed command/ 400 4.3.3 Message not accepted by Exchange. Retrying later
+/^502 5\.5\.2 Error: command not recognized/ 402 5.5.2 Message not accepted by Postfix. Retrying later
+/^500 Syntax error/ 400 Message not accepted by Lotus. Retrying later

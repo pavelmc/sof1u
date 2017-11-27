@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/fuzzyocr/!svn/ver/131/trunk/devel/FuzzyOcr
+END
+Scoring.pm
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/fuzzyocr/!svn/ver/131/trunk/devel/FuzzyOcr/Scoring.pm
+END
+Config.pm
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/fuzzyocr/!svn/ver/127/trunk/devel/FuzzyOcr/Config.pm
+END
+Logging.pm
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/fuzzyocr/!svn/ver/99/trunk/devel/FuzzyOcr/Logging.pm
+END
+Preprocessor.pm
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/fuzzyocr/!svn/ver/81/trunk/devel/FuzzyOcr/Preprocessor.pm
+END
+Deanimate.pm
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/fuzzyocr/!svn/ver/122/trunk/devel/FuzzyOcr/Deanimate.pm
+END
+Misc.pm
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/fuzzyocr/!svn/ver/130/trunk/devel/FuzzyOcr/Misc.pm
+END
+Scanset.pm
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/fuzzyocr/!svn/ver/86/trunk/devel/FuzzyOcr/Scanset.pm
+END
+Hashing.pm
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/fuzzyocr/!svn/ver/116/trunk/devel/FuzzyOcr/Hashing.pm
+END

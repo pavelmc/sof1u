@@ -1,0 +1,17 @@
+<b>CLONE emails:</b><br/>
+Messages received for recipient@<?= $domains[$count] ?> can be delivered as duplicate/backup to:<br/>
+<ul>same-recipient@other-domain.com</ul>
+<ul>same-recipient@other-sub.domain.com</ul>
+<br/>
+CLONE is useful when migrating mailboxes from an old server to a new server may take days.<br/>
+Hence, incoming emails should be delivered to both servers during the transition period.<br/>
+<ul>Old server has @domain.com already set</ul>
+<ul>Creare @domain.com on the new server (as primary, default domain)</ul>
+<ul>Create alias domain @new.domain.com on the new server</ul>
+<ul>Create sub-zone new.domain.com on the DNS server</ul>
+<ul>Create MX record for new.domain.com sub-zone pointing to the new server</ul>
+<ul>Add @new.domain.com in the field below</ul>
+<br/>
+Expected result:<br/>
+Any email to @domain.com (on the old server) will be cloned to @new.domain.com (new server) as well.<br/>
+<br/>

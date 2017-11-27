@@ -1,0 +1,24 @@
+<b>IPSec</b><br/>
+<br/>
+Is an integral part of the security model of IPv6 and is the only solution for IP to IP encryption, at the present time.<br/>
+<br/>
+Benefits: <br/>
+<ul>data integrity (checksum), data confidentiality (encryption), data origin authentication (spoofing protection).</ul>
+<ul>Scrollout uses IPSec, with AES 256 bit algorithm and PFS, to encrypt TCP port 25 (default) or any custom TCP port.<br/>
+(on top of the existing SMTP with TLS)</ul>
+<br/>
+Usage:<br/>
+<ul>Input external IP addresses, not the internal IP addresses that appear on the other Scrollout gateways.</ul>
+<ul>Use a very complex pre-shared key. It must be the same on all other machines you specified.</ul>
+<ul>Uses/requires UDP port 4500 (NAT traversal).</ul>
+<br/>
+Notes:<br/>
+<ul>Pros: offers a good protection against hackers attempting MITM and REPLAY attacks.</ul>
+<ul>Pros: This is an IP to IP (HOST to HOST) transport encryption, not a VPN tunnel:<br/>
+communications between machines behind Scrollout gateways are not possible.</ul>
+<ul>Pros: Clean configuration, with no predefined default keys that can be exploited and used as backdoors.</ul>
+<ul>Pros: Compatible with Microsoft Windows IPSec.</ul>
+<br/>
+<ul>Cons: Old (but not outdated), too complex and poorly documented to become widely adopted.</ul>
+<ul>Cons: Is not considered a guaranteed/proof solution against ANY traffic interception method.</ul>
+<br/>

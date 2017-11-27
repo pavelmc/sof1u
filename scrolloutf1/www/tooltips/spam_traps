@@ -1,0 +1,8 @@
+<b>Spam traps</b><br />
+Any message received for these address(es) is considered 100% spam and will be learned and quarantined.<br />
+Hide these email addresses in the source of your web site or copy the div id "contacts" from the source of welcome page.<br />
+These addresses are considered as non-existent.<br />
+Do not add the domain name @my-domain.com.<br />
+e.g.:<br />
+for my-trap1@my-domain.com, my-trap2@my-domain.com input my-trap1, my-trap2 only.<br />
+

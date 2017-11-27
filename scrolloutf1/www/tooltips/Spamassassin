@@ -1,0 +1,19 @@
+<b>Spamassassin</b><br />
+Sets the level of Spamassassin. <br />
+<br />
+e.g.: <br />
+Level 4<br />
+<li>messages below score 4.5: pass</li>
+<li>messages between score 4.5 and 6.5: pass with "Spam:" in the Subject</li>
+<li>messages above score 6.5: quarantine, do not reach the recipient mailbox</li>
+<br />
+Level 5<br />
+<li>messages below score 5: pass</li>
+<li>messages between score 5 and 7: pass with "Spam:" in the Subject</li>
+<li>messages above score 7: quarantine, do not reach the recipient mailbox</li>
+<br />
+Level 6<br />
+<li>messages below score 5.5: pass</li>
+<li>messages between score 5.5 and 7.5: pass with "Spam:" in the Subject</li>
+<li>messages above score 7.5: quarantine, do not reach the recipient mailbox</li>
+

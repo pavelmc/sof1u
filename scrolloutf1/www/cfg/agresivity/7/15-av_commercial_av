@@ -1,0 +1,24 @@
+use strict;
+##
+## AV Scanners (Commercial version)
+##
+
+$interface_policy{'10027'} = 'COMMAV';
+
+$policy_bank{'COMMAV'} = {
+
+av_scanners => [
+	
+ ### http://www.bitdefender.com/
+ ### Commercial inquiry: http://www.bitdefender.com/site/Buy/inquire/
+ 
+  ['BitDefender', 'bdscan',  # new version
+    '--action=ignore --no-list {}', qr/^Infected files\s*:\s*0+(?!\d)/m,
+    qr/^(?:Infected files|Identified viruses|Suspect files)\s*:\s*0*[1-9]/m,
+    qr/(?:suspected|infected)\s*:\s*(.*)(?:\033|$)/m ],
+
+	],
+
+};
+
+1;  # ensure a defined return

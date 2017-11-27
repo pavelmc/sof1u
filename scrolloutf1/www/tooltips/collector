@@ -1,0 +1,10 @@
+<b>Collector</b><br />
+This is a quarantine mailbox with some features.<br />
+With one single mailbox created on your real email server you can:<br />
+<li> Catch all junk emails.</li>
+<li> Receive detailed reporting emails for each spam or virus email.</li>
+<li> Receive spam sent to Traps.</li>
+<li> Helps Scrollout F1 to learn from spam & legit emails using IMAP service.</li>
+<li> Whitelist sender domain using drag & drop emails (with MS Outlook)</li>
+<li> Blacklist sender address using drag & drop emails (with MS Outlook)</li>
+<li> Manage everything using an IMAP clients (as Outlook)</li>

@@ -1,0 +1,186 @@
+use strict;
+
+# ADMINISTRATORS:
+# Debian suggests that any changes you need to do that should never
+# be "updated" by the Debian package should be made in another file,
+# overriding the settings in this file.
+#
+# The package will *not* overwrite your settings, but by keeping
+# them separate, you will make the task of merging changes on these
+# configuration files much simpler...
+
+#   see /usr/share/doc/amavisd-new/examples/amavisd.conf-default for
+#       a list of all variables with their defaults;
+#   see /usr/share/doc/amavisd-new/examples/amavisd.conf-sample for
+#       a traditional-style commented file  
+#   [note: the above files were not converted to Debian settings!]
+#
+#   for more details see documentation in /usr/share/doc/amavisd-new
+#   and at http://www.ijs.si/software/amavisd/amavisd-new-docs.html
+$sa_spawned = 1;
+$child_timeout=600;
+$QUARANTINEDIR = ''; # $QUARANTINEDIR = "$MYHOME/virusmails";
+$quarantine_subdir_levels = 1; # enable quarantine dir hashing
+
+$log_recip_templ = undef;    # disable by-recipient level-0 log entries
+$DO_SYSLOG = 1;              # log via syslogd (preferred)
+$syslog_ident = 'amavis';    # syslog ident tag, prepended to all messages
+$syslog_facility = 'mail';
+$syslog_priority = 'debug';  # switch to info to drop debug output, etc
+
+$enable_db = 0;              # enable use of BerkeleyDB/libdb (SNMP and nanny)
+$enable_global_cache = 1;    # enable use of libdb-based cache if $enable_db=1
+
+$inet_socket_port = [10024,10026,10027];   # default listening socket
+
+$sa_spam_subject_tag = 'Spam: ';
+$sa_tag_level_deflt  = -1000.0;  # add spam info headers if at, or above that level
+$sa_tag2_level_deflt = 5.0; # add 'spam detected' headers at that level
+$sa_kill_level_deflt = 7.0; # triggers spam evasive actions
+$sa_dsn_cutoff_level = 500.0;   # spam level beyond which a DSN is not sent
+$sa_quarantine_cutoff_level = 500.0;
+# $sa_crediblefrom_dsn_cutoff_level = undef;
+
+$sa_mail_body_size_limit = 250*1024; # don't waste time on SA if mail is larger
+$sa_local_tests_only = 0;    # only tests which do not require internet access?
+
+# Quota limits to avoid bombs (like 42.zip)
+
+$MAXLEVELS = 14;
+$MAXFILES = 1500;
+$MIN_EXPANSION_QUOTA =      100*1024;  # bytes
+$MAX_EXPANSION_QUOTA = 300*1024*1024;  # bytes
+
+# You should:
+#   Use D_DISCARD to discard data (viruses)
+#   Use D_BOUNCE to generate local bounces by amavisd-new
+#   Use D_REJECT to generate local or remote bounces by the calling MTA
+#   Use D_PASS to deliver the message
+#
+# Whatever you do, *NEVER* use D_REJECT if you have other MTAs *forwarding*
+# mail to your account.  Use D_BOUNCE instead, otherwise you are delegating
+# the bounce work to your friendly forwarders, which might not like it at all.
+#
+# On dual-MTA setups, one can often D_REJECT, as this just makes your own
+# MTA generate the bounce message.  Test it first.
+#
+# Bouncing viruses is stupid, always discard them after you are sure the AV
+# is working correctly.  Bouncing real SPAM is also useless, if you cannot
+# D_REJECT it (and don't D_REJECT mail coming from your forwarders!).
+
+# $final_virus_destiny      = D_DISCARD;  # (data not lost, see virus quarantine)
+# $final_banned_destiny     = D_DISCARD;   # D_REJECT when front-end MTA
+# $final_spam_destiny       = D_DISCARD;
+# $final_bad_header_destiny = D_PASS;     # False-positive prone (for spam)
+
+# $enable_dkim_verification = 0; #disabled to prevent warning
+
+$virus_admin = "xREPORT_VIRUSx"; # due to D_DISCARD default
+$virus_quarantine_to = "xREPORT_VIRUSx";
+$banned_quarantine_to = "xREPORT_VIRUSx";
+$spam_quarantine_to = "xREPORT_SPAMx";
+$bad_header_quarantine_to = undef;
+
+
+
+# Set to empty ("") to add no header
+$X_HEADER_LINE = "Scrollout F1 at $mydomain";
+
+# REMAINING IMPORTANT VARIABLES ARE LISTED HERE BECAUSE OF LONGER ASSIGNMENTS
+
+#
+# DO NOT SEND VIRUS NOTIFICATIONS TO OUTSIDE OF YOUR DOMAIN. EVER.
+#
+# These days, almost all viruses fake the envelope sender and mail headers.
+# Therefore, "virus notifications" became nothing but undesired, aggravating
+# SPAM.  This holds true even inside one's domain.  We disable them all by
+# default, except for the EICAR test pattern.
+#
+
+@viruses_that_fake_sender_maps = (new_RE(
+  [qr'\bEICAR\b'i => 0],            # av test pattern name
+  [qr/.*/ => 1],  # true for everything else
+));
+
+@keep_decoded_original_maps = (new_RE(
+  qr'^MAIL$',   # retain full original message for virus checking (can be slow)
+  qr'^MAIL-UNDECIPHERABLE$', # recheck full mail if it contains undecipherables
+  qr'^(ASCII(?! cpio)|text|uuencoded|xxencoded|binhex)'i,
+#  qr'^Zip archive data',     # don't trust Archive::Zip
+));
+
+
+# for $banned_namepath_re, a new-style of banned table, see amavisd.conf-sample
+
+xFILETYPEx
+
+# ENVELOPE SENDER SOFT-WHITELISTING / SOFT-BLACKLISTING
+
+@score_sender_maps = ({ # a by-recipient hash lookup table,
+                        # results from all matching recipient tables are summed
+
+# ## per-recipient personal tables  (NOTE: positive: black, negative: white)
+# 'user1@example.com'  => [{'bla-mobile.press@example.com' => 10.0}],
+# 'user3@example.com'  => [{'.ebay.com'                 => -3.0}],
+# 'user4@example.com'  => [{'cleargreen@cleargreen.com' => -7.0,
+#                           '.cleargreen.com'           => -5.0}],
+
+  ## site-wide opinions about senders (the '.' matches any recipient)
+  '.' => [  # the _first_ matching sender determines the score boost
+
+   new_RE(  # regexp-type lookup table, just happens to be all soft-blacklist
+    [qr'^(bulkmail|offers|cheapbenefits|earnmoney|foryou)@'i         => 0.5],
+    [qr'^(greatcasino|investments|lose_weight_today|market\.alert)@'i=> 0.5],
+    [qr'^(money2you|MyGreenCard|new\.tld\.registry|opt-out|opt-in)@'i=> 0.5],
+    [qr'^(optin|saveonlsmoking2002k|specialoffer|specialoffers)@'i   => 0.5],
+    [qr'^(stockalert|stopsnoring|wantsome|workathome|yesitsfree)@'i  => 0.5],
+    [qr'^(your_friend|greatoffers)@'i                                => 0.5],
+    [qr'^(inkjetplanet|marketopt|MakeMoney)\d*@'i                    => 0.5],
+   ),
+
+#  read_hash("/var/amavis/sender_scores_sitewide"),
+
+# This are some examples for whitelists, since envelope senders can be forged
+# they are not enabled by default. 
+   { # a hash-type lookup table (associative array)
+     #'nobody@cert.org'                        => -3.0,
+     #'cert-advisory@us-cert.gov'              => -3.0,
+     #'owner-alert@iss.net'                    => -3.0,
+     #'slashdot@slashdot.org'                  => -3.0,
+     #'securityfocus.com'                      => -3.0,
+     #'ntbugtraq@listserv.ntbugtraq.com'       => -3.0,
+     #'security-alerts@linuxsecurity.com'      => -3.0,
+     #'mailman-announce-admin@python.org'      => -3.0,
+     #'amavis-user-admin@lists.sourceforge.net'=> -3.0,
+     #'amavis-user-bounces@lists.sourceforge.net' => -3.0,
+     #'spamassassin.apache.org'                => -3.0,
+     #'notification-return@lists.sophos.com'   => -3.0,
+     #'owner-postfix-users@postfix.org'        => -3.0,
+     #'owner-postfix-announce@postfix.org'     => -3.0,
+     #'owner-sendmail-announce@lists.sendmail.org'   => -3.0,
+     #'sendmail-announce-request@lists.sendmail.org' => -3.0,
+     #'donotreply@sendmail.org'                => -3.0,
+     #'ca+envelope@sendmail.org'               => -3.0,
+     #'noreply@freshmeat.net'                  => -3.0,
+     #'owner-technews@postel.acm.org'          => -3.0,
+     #'ietf-123-owner@loki.ietf.org'           => -3.0,
+     #'cvs-commits-list-admin@gnome.org'       => -3.0,
+     #'rt-users-admin@lists.fsck.com'          => -3.0,
+     #'clp-request@comp.nus.edu.sg'            => -3.0,
+     #'surveys-errors@lists.nua.ie'            => -3.0,
+     #'emailnews@genomeweb.com'                => -5.0,
+     #'yahoo-dev-null@yahoo-inc.com'           => -3.0,
+     #'returns.groups.yahoo.com'               => -3.0,
+     #'clusternews@linuxnetworx.com'           => -3.0,
+     #lc('lvs-users-admin@LinuxVirtualServer.org')    => -3.0,
+     #lc('owner-textbreakingnews@CNNIMAIL12.CNN.COM') => -5.0,
+
+     # soft-blacklisting (positive score)
+     #'sender@example.net'                     =>  3.0,
+     #'.example.net'                           =>  1.0,
+
+   },
+  ],  # end of site-wide tables
+});
+
+1;  # ensure a defined return

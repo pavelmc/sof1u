@@ -1,0 +1,12 @@
+
+#####################################################
+# AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
+#####################################################
+
+if /^Subject: /
+/^Subject: / info
+endif
+
+if /^X-Spam-Status: /
+/^X-Spam-Status: \S.*\d+\s+tests=(.*)/ info $1
+endif

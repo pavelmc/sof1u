@@ -1,0 +1,34 @@
+
+urifullnsrhssub	SO_PUB_URIBL_NS_RSPAM	REPSPAM-uri-ns.rbl.scrolloutf1.com A 127.127.127.127
+body		SO_PUB_URIBL_NS_RSPAM	eval:check_uridnsbl('SO_PUB_URIBL_NS_RSPAM')
+describe	SO_PUB_URIBL_NS_RSPAM	URL's ns address has been reported to REPSPAM-uri-ns.rbl.scrolloutf1.com
+tflags		SO_PUB_URIBL_NS_RSPAM	net ns
+score		SO_PUB_URIBL_NS_RSPAM	0 -0.001 0 -0.001
+
+urirhssub	SO_PUB_URIBL_DOMAIN_RSPAM	REPSPAM-uri-domain.rbl.scrolloutf1.com A 127.127.127.127
+body		SO_PUB_URIBL_DOMAIN_RSPAM	eval:check_uridnsbl('SO_PUB_URIBL_DOMAIN_RSPAM')
+describe	SO_PUB_URIBL_DOMAIN_RSPAM	URL's domain address has been reported to REPSPAM-uri-domain.rbl.scrolloutf1.com
+tflags		SO_PUB_URIBL_DOMAIN_RSPAM	net 
+score		SO_PUB_URIBL_DOMAIN_RSPAM	0 -0.001 0 -0.001
+
+uridnssub	SO_PUB_URIBL_IP_RSPAM	REPSPAM-uri-ip.rbl.scrolloutf1.com A 127.127.127.127
+body		SO_PUB_URIBL_IP_RSPAM	eval:check_uridnsbl('SO_PUB_URIBL_IP_RSPAM')
+describe	SO_PUB_URIBL_IP_RSPAM	URL's ip address has been reported to REPSPAM-uri-ip.rbl.scrolloutf1.com
+tflags		SO_PUB_URIBL_IP_RSPAM	net a
+score		SO_PUB_URIBL_IP_RSPAM	0 -0.001 0 -0.001
+
+header		__SO_PUB_SNDR_RSPAM	eval:check_rbl('sof1-lastexternal', 'REPSPAM-sndr.rbl.scrolloutf1.com')
+header		SO_PUB_SNDR_RSPAM	eval:check_rbl_sub('sof1-lastexternal', '^127\.127\.127\.127$')
+describe	SO_PUB_SNDR_RSPAM	Sender's address has been reported to REPSPAM-sndr.rbl.scrolloutf1.com
+score		SO_PUB_SNDR_RSPAM	0 -0.001 0 -0.001
+tflags		SO_PUB_SNDR_RSPAM	net
+reuse		SO_PUB_SNDR_RSPAM
+
+ifplugin Mail::RSPAMAssassin::Plugin::AskDNS
+
+askdns          SO_PUB_SNDR_DOMAIN_DKIM_RSPAM		_DKIMDOMAIN_.REPSPAM-dkim.rbl.scrolloutf1.com A 127.127.127.127
+describe        SO_PUB_SNDR_DOMAIN_DKIM_RSPAM		Sender's domain DKIM is listed in REPSPAM-dkim.rbl.scrolloutf1.com
+tflags          SO_PUB_SNDR_DOMAIN_DKIM_RSPAM		net
+score           SO_PUB_SNDR_DOMAIN_DKIM_RSPAM		0 0.001 0 0.001
+
+endif
