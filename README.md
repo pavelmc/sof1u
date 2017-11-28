@@ -24,26 +24,35 @@ Installation
 
 Note: If you are using a CT in proxmox please remove postfix before start to install with:
 
-apt-get remove --purge postfix* -y 
-
+```
+apt-get remove --purge postfix* -y
+``` 
 
 * Download the software with the green button on this page to your desktop.
 * Copy the file sof1u-master.zip it to your base OS, in the /tmp folder.
 * Extract it with:
 
+```
 unzip sof1u-master.zip
+```
 
 * Extract the scrollOut F1 folder from the created one with:
 
+```
 mv sof1u-master/* ./
+```
  
 * Change the permissions of the files with
 
+```
 chmod 755 /tmp/scrolloutf1/www/bin/*
+```
 
 * Invoke the install script with
 
+```
 /tmp/scrolloutf1/www/bin/install.sh
+```
 
 That's all.
 
