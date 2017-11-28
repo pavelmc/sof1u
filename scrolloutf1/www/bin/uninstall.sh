@@ -5,11 +5,19 @@
 #####################################################
 
 ##################################################################################
-# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with Ubuntu 16.04.x LTS #
+# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with modern OS versions #
 # Main changes are issues with (so far)
 #  - PHP5 not being available on Ubuntu xenial: using PHP7
-#  -
 ##################################################################################
+
+# Detecting old/actual OS versions to deal with
+newOS=""
+
+# Detecting actual Ubuntu
+if [[ `grep "Ubuntu " /etc/issue | grep "16"` ]]; then newOS="Y"; fi
+# Detecting actual Debian
+if [[ `grep "Debian " /etc/issue | grep "9"` ]]; then newOS="Y"; fi
+
 
 function f_uninstall(){
 
@@ -84,9 +92,12 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge amavisd-new -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge clamav-daemon -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge apache2 -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge mailgraph -y
-# update for Ubuntu Xenial
-#sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge php5 -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge php -y
+# update for new OS
+if [[ "$newOS" == "Y" ]]; then
+    sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge php -y
+else
+    sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge php5 -y
+fi
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge postfix -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge postgrey -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove --purge smbfs -y

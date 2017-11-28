@@ -1,16 +1,22 @@
 # Deploy
 
 ##################################################################################
-# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with Ubuntu 16.04.x LTS #
+# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with modern OS versions #
 # Main changes are issues with (so far)
 #  - PHP5 not being available on Ubuntu xenial: using PHP7
-#  -
 ##################################################################################
+
+# Detecting old/actual OS versions to deal with
+newOS=""
+
+# Detecting actual Ubuntu
+if [[ `grep "Ubuntu " /etc/issue | grep "16"` ]]; then newOS="Y"; fi
+# Detecting actual Debian
+if [[ `grep "Debian " /etc/issue | grep "9"` ]]; then newOS="Y"; fi
 
 target=/tmp/scrollout
 
 . /var/www/bin/config.sh
-
 
 
 test -f /etc/sudores && rm -f /etc/sudores;
@@ -296,9 +302,12 @@ sudo apt-get autoremove pdns-recursor -qy
 sudo apt-get install bind9 -y
 sudo apt-get install quagga -y
 sudo apt-get install parallel -y
-# update for Ubuntu Xenial
-#sudo apt-get install php5-fpm -y
-sudo apt-get install php-fpm -y
+# update for new OS
+if [[ "$newOS" == "Y" ]]; then
+    sudo apt-get install php-fpm -y
+else
+    sudo apt-get install php5-fpm -y
+fi
 sudo apt-get install host -y
 sudo apt-get install telnet -y
 sudo apt-get install pyzor -y
@@ -421,7 +430,12 @@ chown -R nobody /var/spool/disclaimers
 chown -R nobody /var/spool/filter
 
 rm -fr /etc/nginx/sites-{available,enabled}/*
-cp /var/www/cfg/scrollout.conf  /etc/nginx/sites-available
+# update for new OS
+if [[ "$newOS" == "Y" ]]; then
+    cp /var/www/cfg/scrollout.conf /etc/nginx/sites-available
+else
+    cp /var/www/cfg/scrollout.conf.old /etc/nginx/sites-available/scrollout.conf
+fi
 cp /var/www/cfg/fcgiwrap.conf /etc/nginx/conf.d
 test -L /etc/nginx/sites-enabled/scrollout.conf || ln -s /etc/nginx/sites-available/scrollout.conf /etc/nginx/sites-enabled/scrollout.conf
 
@@ -445,19 +459,22 @@ test -L /etc/nginx/sites-enabled/scrollout.conf || ln -s /etc/nginx/sites-availa
 
 let disksize=`df | awk '/\/$/ {print $2}' | head -1`/1024/4;
 sed -i -e "s/.*auth_worker_max_count = .*/auth_worker_max_count = 300/" /etc/dovecot/conf.d/10-auth.conf;
-# updated for Ubuntu Xenial
-#~ sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
-sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
+# update for new OS
+if [[ "$newOS" == "Y" ]]; then
+    sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
+else
+    sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
+    sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
+    sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
+    sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
+    sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
+    sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
+fi
 test -f /etc/postfix/bcc_maps && postmap /etc/postfix/bcc_maps;
 test -f /etc/postfix/recipients && postmap /etc/postfix/recipients;
 test -f /etc/postfix/relay_recipients && postmap /etc/postfix/relay_recipients;
@@ -493,9 +510,12 @@ find /var/lib/amavis/.spamassassin/ -type f -name "*{seen,toks,lock}*" -delete
 /var/www/bin/reset_iptables.sh
 /var/www/bin/pwd.sh create
 
-# update for Ubuntu Xenial
-#for service in nginx rsyslog redis-server quagga postsrsd unattended-upgrades php5-fpm incron cron; do
-for service in nginx rsyslog redis-server quagga postsrsd unattended-upgrades php-fpm incron cron; do
+# update for new OS
+SERVS="nginx rsyslog redis-server quagga postsrsd unattended-upgrades php5-fpm incron cron"
+if [[ "$newOS" == "Y" ]]; then
+    SERVS="nginx rsyslog redis-server quagga postsrsd unattended-upgrades php-fpm incron cron"
+fi
+for service in $SERVS; do
 echo "$service"
 done | parallel --gnu "service {} restart"
 

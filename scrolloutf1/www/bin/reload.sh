@@ -5,26 +5,29 @@
 #####################################################
 
 ##################################################################################
-# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with Ubuntu 16.04.x LTS #
+# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with modern OS versions #
 # Main changes are issues with (so far)
 #  - PHP5 not being available on Ubuntu xenial: using PHP7
-#  -
 ##################################################################################
+
+
+# Detecting old/actual OS versions to deal with
+newOS=""
+
+# Detecting actual Ubuntu
+if [[ `grep "Ubuntu " /etc/issue | grep "16"` ]]; then newOS="Y"; fi
+# Detecting actual Debian
+if [[ `grep "Debian " /etc/issue | grep "9"` ]]; then newOS="Y"; fi
 
 
 CONFIG=/var/www/bin/config.sh
 . $CONFIG
 
-
-
 test -f $run/reload.pid && exit 0;
 
 echo $$ > $run/reload.pid
 
-
-
 lockfile-create $tmp/restarting
-
 
 test -f /etc/postfix/bcc_maps && postmap /etc/postfix/bcc_maps;
 test -f /etc/postfix/recipients && postmap /etc/postfix/recipients;
@@ -46,9 +49,12 @@ done | parallel --gnu "service {} restart" > /dev/null 2>&1
 kill -9 `lsof -t -u amavis`
 /etc/init.d/amavis start
 
-# update for Ubuntu Xenial
-#for service in bind9 dovecot postfix php5-fpm incron cron rbldnsd nginx; do
-for service in bind9 dovecot postfix php-fpm incron cron rbldnsd nginx; do
+# update for new OS
+SERVS="bind9 dovecot postfix php5-fpm incron cron rbldnsd nginx"
+if [[ "$newOS" == "Y" ]]; then
+    SERVS="bind9 dovecot postfix php-fpm incron cron rbldnsd nginx"
+fi
+for service in $SERVS; do
 echo "$service"
 done | parallel --gnu "service {} reload || service {} restart" > /dev/null 2>&1
 

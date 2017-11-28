@@ -1,15 +1,13 @@
-
-
+#!/bin/bash
 
 #####################################################
 # AUTHOR: MARIUS GOLOGAN (marius.gologan@gmail.com) #
 #####################################################
 
 ##################################################################################
-# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with Ubuntu 16.04.x LTS #
+# Modified by Pavel Milanes (pavel.mc@gmail.com) to work with modern OS versions #
 # Main changes are issues with (so far)
 #  - PHP5 not being available on Ubuntu xenial: using PHP7
-#  -
 ##################################################################################
 
 
@@ -19,6 +17,14 @@
 
 
 grep -iE "debian|ubuntu" /etc/issue > /dev/null || (printf "Scrollout works on Debian or Ubuntu only. Aborting...\n" && exit);
+
+# Detecting old/actual OS versions to deal with
+newOS=""
+
+# Detecting actual Ubuntu
+if [[ `grep "Ubuntu " /etc/issue | grep "16"` ]]; then newOS="Y"; fi
+# Detecting actual Debian
+if [[ `grep "Debian " /etc/issue | grep "9"` ]]; then newOS="Y"; fi
 
 function f_install(){
 
@@ -133,9 +139,12 @@ sudo pip install redis
 sudo apt-get install bind9 -y
 sudo apt-get install quagga -y
 sudo apt-get install parallel -y
-# update for ubuntu xenial
-#sudo apt-get install php5-fpm -y
-sudo apt-get install php-fpm -y
+# update for new OS
+if [[ "$newOS" == "Y" ]]; then
+    sudo apt-get install php-fpm -y
+else
+    sudo apt-get install php5-fpm -y
+fi
 sudo apt-get install host -y
 sudo apt-get install telnet -y
 sudo apt-get install pflogsumm -y
@@ -171,9 +180,12 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install nginx -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install nginx-extras -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install mailgraph -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install ntpdate -y
-# Changes for Ubuntu Xenial
-#sudo DEBIAN_FRONTEND=noninteractive apt-get install php5 -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install php -y
+# update for new OS
+if [[ "$newOS" == "Y" ]]; then
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install php -y
+else
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install php5 -y
+fi
 sudo DEBIAN_FRONTEND=noninteractive apt-get install postfix -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install smbfs -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install cifs-utils -y
@@ -318,7 +330,12 @@ test -f /etc/postfix/certs/scrollout.key && chmod 664 /etc/postfix/certs/scrollo
 update-ca-certificates
 
 rm -fr /etc/nginx/sites-{available,enabled}/*default*
-cp /var/www/cfg/scrollout.conf /etc/nginx/sites-available
+# update for new OS
+if [[ "$newOS" == "Y" ]]; then
+    cp /var/www/cfg/scrollout.conf /etc/nginx/sites-available
+else
+    cp /var/www/cfg/scrollout.conf.old /etc/nginx/sites-available/scrollout.conf
+fi
 cp /var/www/cfg/fcgiwrap.conf /etc/nginx/conf.d
 test -L /etc/nginx/sites-enabled/scrollout.conf || ln -s /etc/nginx/sites-available/scrollout.conf /etc/nginx/sites-enabled/
 
@@ -338,19 +355,22 @@ test -L /etc/nginx/sites-enabled/scrollout.conf || ln -s /etc/nginx/sites-availa
 
 let disksize=`df | awk '/\/$/ {print $2}' | head -1`/1024/4;
 sed -i -e "s/.*auth_worker_max_count = .*/auth_worker_max_count = 300/" /etc/dovecot/conf.d/10-auth.conf;
-# updates for Ubuntu Xenial
-#~ sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
-#~ sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
-sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
-sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
+# update for new OS
+if [[ "$newOS" == "Y" ]]; then
+    sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
+    sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php/7.0/fpm/php.ini
+else
+    sed -i "s/.*short_open_tag .*/short_open_tag = On/" /etc/php5/fpm/php.ini
+    sed -i "s/.*max_input_vars .*/max_input_vars = 25000/" /etc/php5/fpm/php.ini
+    sed -i "s/.*max_execution_time .*/max_execution_time = 300/" /etc/php5/fpm/php.ini
+    sed -i "s/.*memory_limit .*/memory_limit = 128M/" /etc/php5/fpm/php.ini
+    sed -i "s/.*suhosin.post.max_vars .*/suhosin.post.max_vars = 25000/" /etc/php5/fpm/php.ini
+    sed -i "s/.*suhosin.request.max_vars .*/suhosin.request.max_vars = 25000/" /etc/php5/fpm/php.ini
+fi
 cp /var/www/cfg/incrontab /var/spool/incron/root
 cp /var/www/cfg/geo/URICountry.pm /usr/share/perl5/Mail/SpamAssassin/Plugin
 cp /var/www/cfg/quagga_daemons.conf /etc/quagga/daemons
@@ -442,9 +462,12 @@ echo "/swapfile.img swap swap sw 0 0" >> /etc/fstab
 )
 
 /etc/init.d/nginx restart
-# update for Ubuntu Xenial
-#/etc/init.d/php5-fpm restart
-/etc/init.d/php7.0-fpm restart
+# update for new OS
+if [[ "$newOS" == "Y" ]]; then
+    /etc/init.d/php7.0-fpm restart
+else
+    /etc/init.d/php5-fpm restart
+fi
 # /etc/init.d/postgrey stop
 # rm /var/lib/postgrey/postgrey.lock
 # /etc/init.d/postgrey start
