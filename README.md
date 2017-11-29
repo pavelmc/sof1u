@@ -60,7 +60,7 @@ cd /tmp
 wget https://github.com/pavelmc/sof1u/archive/master.zip -O sof1u-master.zip
 ```
 
-If you don't have internet on the target PC, you can download it to your desktop by just clicking the the green button on the top-right part of this page and sellect "Download ZIP", once you has the file, copy it to the target PC into the /tmp folder (use your prefered method here); note that the name of the file must be _"sof1u-master.zip"_.
+If you don't have internet on the target PC, you can download it to your desktop by just clicking the the green button on the top-right part of this page and select "Download ZIP", once you has the file, copy it to the target PC into the /tmp folder (use your prefered method here); note that the name of the file must be _"sof1u-master.zip"_.
 
 * Extract it with:
 
