@@ -38,7 +38,7 @@ _**Note:** If you are using a Ubuntu container in a Proxmox Virtualization Envir
 apt-get remove --purge postfix* -y
 ```
 
-* You need a **fresh** install of Debian 7/8/9 or Ubuntu 14.04/16.04 TLS versions, otherwise it will fail. (Did you see the bold _**fresh**_ word?)
+* You need a **fresh** install of Debian 7/8/9 or Ubuntu 14.04/16.04 LTS versions, otherwise it will fail. (Did you see the bold _**fresh**_ word?)
 * Please check you have set up your server IPs, hostname and DNS domain correctly, once you start installing those values will be hard-coded in a few places.
 * Assuming the FQDN of your server is _"egw.mydomain.com"_, you can check if your hostname & domain settings are correct by running this two commands on console:
 
