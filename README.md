@@ -51,8 +51,17 @@ egw.mydomain.com
 ```
 
 * Please check your repository configurations and fully update your system before continuing.
-* Download the software with the green button on this page to your desktop.
-* Copy the downloaded file _"sof1u-master.zip"_ to your target PC, to the /tmp folder.
+* Download the software:
+
+Here you has two options: if the PC has internet connection just do this in console:
+
+```
+cd /tmp
+wget https://github.com/pavelmc/sof1u/archive/master.zip -O sof1u-master.zip
+```
+
+If you don't have internet on the target PC, you can download it to your desktop by just clicking the the green button on the top-right part of this page and sellect "Download ZIP", once you has the file, copy it to the target PC into the /tmp folder (use your prefered method here); note that the name of the file must be _"sof1u-master.zip"_.
+
 * Extract it with:
 
 ```
@@ -65,13 +74,13 @@ unzip sof1u-master.zip
 mv sof1u-master/* ./
 ```
 
-* Change the permissions of the files with
+* Change the permissions of the files with:
 
 ```
 chmod 755 /tmp/scrolloutf1/www/bin/*
 ```
 
-* Invoke the install script with
+* Invoke the install script with:
 
 ```
 /tmp/scrolloutf1/www/bin/install.sh
