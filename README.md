@@ -7,7 +7,7 @@ This is a slightly modified version of the ScrollOutF1 email gateway software.
 Because we can _(the software is licensed under GPL version 2)_ and because the software is very good, but unfortunately it lacks support for modern Operating Systems like Debian 9.x and Ubuntu 16.04 LTS, basically for these two reasons:
 
 * In Debian 9.x it insist on using PHP ver 5.x and the mainstream version is now 7.x
-* In Ubuntu 16.04 LTS the PHP scripting language version 5.x was deprecated an removed from the repositories and is no longer an option now.
+* In Ubuntu 16.04 LTS the PHP scripting language version 5.x was deprecated an removed from the repositories and is no longer an option.
 
 I tried (unsuccessfully) to contact the developer to help him build a fix with our tests, but since there was some real interest in our country (Cuba) for using this solution, but based on modern versions of Debian / Ubuntu, I put hands to work and this is the result.
 
@@ -22,8 +22,8 @@ If you try to run the update.sh script you will get a warning like this one.
 ### Changelog: ###
 
 * 27 nov 2017 (1): Repository creation based on the actual tar file from www.scrolloutf1.com page
-* 27 nov 2017 (2): Basic support for Ubuntu 16.04 LTS, in fact it's teaked to **ONLY** work on that system at this point, it will not work on older ones (either Ubuntu or Debian) I will soon introduce more validations on the script to make it support new and old versions.
-* 27 nov 2017 (3): The validation for newer Ubuntu and Debian is in place, it will detect the version and install the corresponding software and config files; also it will work now for older versions like the official scrolloutf1.tar file does. _(Linus Torvals style: don't break it trying to fix it)_
+* 27 nov 2017 (2): Basic support for Ubuntu 16.04 LTS, in fact it's tweaked to **ONLY** work on that system at this point, it will not work on older ones (either Ubuntu or Debian) I will soon introduce more validations on the script to make it support new and old versions.
+* 27 nov 2017 (3): The validation for newer Ubuntu and Debian is in place, it will detect the version and install the corresponding software and config files; also it will now work for older versions like the official scrolloutf1.tar file does. _(Linus Torvals style: don't break it trying to fix it)_
 
 ## Roadmap / TODO ##
 
@@ -32,7 +32,7 @@ If you try to run the update.sh script you will get a warning like this one.
 
 ## Installation ##
 
-_**Note:** If you are using a Ubuntu container in a Proxmox Virtualization Environment please remove postfix before start to install with:_
+_**Note:** If you are using an Ubuntu container in a Proxmox Virtualization Environment please remove postfix before beginning installation, with:_
 
 ```
 apt-get remove --purge postfix* -y
@@ -40,7 +40,7 @@ apt-get remove --purge postfix* -y
 
 * You need a **fresh** install of Debian 7/8/9 or Ubuntu 14.04/16.04 LTS versions, otherwise it will fail. (Did you see the bold _**fresh**_ word?)
 * Please check you have set up your server IPs, hostname and DNS domain correctly, once you start installing those values will be hard-coded in a few places.
-* Assuming the FQDN of your server is _"egw.mydomain.com"_, you can check if your hostname & domain settings are correct by running this two commands on console:
+* Assuming the FQDN of your server is _"egw.mydomain.com"_, you can check if your hostname & domain settings are correct by running these two commands on console:
 
 ```
 user@server:~/$ hostname
@@ -53,7 +53,7 @@ egw.mydomain.com
 * Please check your repository configurations and fully update your system before continuing.
 * Download the software:
 
-Here you has two options: if the PC has internet connection just do this in console:
+Here you have two options: if the PC has internet connection just do this in console:
 
 ```
 cd /tmp
@@ -91,7 +91,7 @@ chmod 755 /tmp/scrolloutf1/www/bin/*
 
 ## Author ##
 
-I'm Pavel Milanes, a FLOSS enthusiast and SysAdmin by choice, I live in Cuba where a masive migration to FLOSS is taking place system by system, all that by dedicated sysadmins who spend precious hours of his time to make things work and work fine.
+I'm Pavel Milanes, a FLOSS enthusiast and SysAdmin by choice, I live in Cuba where a masive migration to FLOSS is taking place system by system, all that by dedicated sysadmins who spend precious hours of their time to make things work and work fine.
 
 This is a small contribution for them, you can reach me by email or [telegram](https://t.me/sysadmincuba), also we have place on the net: [SysAdminsdeCuba](https://www.sysadminsdecuba.com)
 
@@ -101,6 +101,6 @@ If this mod work for you, please, let me know.
 
 If you like to make a donation, contact me by mail for instructions, sadly PayPal does not work with Cuba.
 
-If it does not work for you: tell us too! We will try to figure what's going wrong and fix it. Please use the Issues tab on top of this page for that.
+If it does not work for you: tell us too! We will try to figure out what's going wrong and fix it. Please use the Issues tab on top of this page for that.
 
 Cheers.
