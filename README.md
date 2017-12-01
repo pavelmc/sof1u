@@ -26,7 +26,7 @@ As I don't provide any functional update mechanism by now (other than a reinstal
 * 27 nov 2017 (1): Repository creation based on the actual tar file from www.scrolloutf1.com page
 * 27 nov 2017 (2): Basic support for Ubuntu 16.04 LTS, in fact it's tweaked to **ONLY** work on that system at this point, it will not work on older ones (either Ubuntu or Debian) I will soon introduce more validations on the script to make it support new and old versions.
 * 27 nov 2017 (3): The validation for newer Ubuntu and Debian is in place, it will detect the version and install the corresponding software and config files; also it will now work for older versions like the official scrolloutf1.tar file does. _(Linus Torvals style: don't break it trying to fix it)_
-* 1 dec 2017: Fix for clamav-amavisd integration, if you installed this software before December 1st 2017, you may want to look at Issue #2 for an easy fix update.
+* 1 dec 2017: Fix for clamav-amavisd integration, if you installed this software before December 1st 2017, you may want to look at [Issue #2](https://github.com/pavelmc/sof1u/issues/2) for an easy fix.
 
 ## Roadmap / TODO ##
 
