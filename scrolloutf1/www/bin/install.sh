@@ -202,6 +202,9 @@ sudo sa-update -D
 sudo adduser clamav amavis
 sudo adduser amavis clamav
 
+# fix for amavis-clamav troubles in Ubuntu 16.04 that will no hurt in others
+chmod -R 775 /var/lib/amavis/tmp
+
 rm /usr/bin/pyzor
 rm /usr/bin/pyzord
 ln -s /usr/local/bin/pyzor /usr/bin/pyzor

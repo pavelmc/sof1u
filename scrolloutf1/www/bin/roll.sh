@@ -106,6 +106,8 @@ cp -r /var/www/cfg/fuzzy/FuzzyOcr* /etc/mail/spamassassin/ );
 sudo adduser clamav amavis
 sudo adduser amavis clamav
 
+# fix for amavis-clamav troubles in Ubuntu 16.04 that will no hurt in others
+chmod -R 775 /var/lib/amavis/tmp
 
 echo '#!/bin/bash' > /etc/cron.hourly/ntpdate
 echo "ntpdate -u pool.ntp.org time.windows.com time.nist.gov ntp.ubuntu.com > /dev/null 2>&1" >> /etc/cron.hourly/ntpdate
