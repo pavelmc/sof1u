@@ -8,6 +8,8 @@
 # Modified by Pavel Milanes (pavel.mc@gmail.com) to work with modern OS versions #
 # Main changes are issues with (so far)
 #  - PHP5 not being available on Ubuntu xenial: using PHP7
+#  - Hostname validation and fix for the certificate generation
+#  - IP address not shown at the end of the install when LANG != en
 ##################################################################################
 
 
@@ -155,10 +157,10 @@ sudo apt-get install rpm -y
 sudo apt-get install rrdtool -y
 sudo apt-get install rsync -y
 sudo apt-get install sharutils -y
-sudo apt-get install strongswan -y
-sudo apt-get install libstrongswan-extra-plugins -y
-sudo apt-get install libstrongswan-standard-plugins -y
-sudo apt-get install libcharon-extra-plugins -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install strongswan -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install libstrongswan-extra-plugins -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install libstrongswan-standard-plugins -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install libcharon-extra-plugins -y
 sudo apt-get install sysstat -y
 sudo apt-get install libsasl2-2 libsasl2-modules -y
 sudo apt-get install spamassassin -y
@@ -312,7 +314,10 @@ rm -fr /etc/cron.daily/scrolloutf1
 rm -fr /etc/cron.daily/clamav
 /etc/init.d/cron restart
 
-openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -keyout server.key  -out server.cert
+# build the certificate ident string
+certid="/O=$(hostname -d | cut -d '.' -f 1)/CN=$(hostname -f)"
+
+openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "$certid" -keyout server.key  -out server.cert
 sudo mv server.cert /etc/postfix/certs/
 sudo mv server.key /etc/postfix/certs/
 
@@ -320,11 +325,11 @@ cp -p /var/www/cgi-bin/mailgraph.cgi /usr/lib/cgi-bin/mailgraph.cgi
 
 test -d /etc/postfix/certs || mkdir /etc/postfix/certs;
 test -d /etc/dovecot/private || mkdir /etc/dovecot/private
-[[ -f /etc/dovecot/private/dovecot.pem ]] || openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -out /etc/dovecot/dovecot.pem -keyout /etc/dovecot/private/dovecot.pem
-[[ -f /etc/dovecot/dovecot.pem ]] || openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -out /etc/dovecot/dovecot.pem -keyout /etc/dovecot/private/dovecot.pem
-[[ -f /etc/postfix/certs/scrollout.cert ]] || (openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -keyout /etc/postfix/certs/scrollout.key  -out /etc/postfix/certs/scrollout.cert && cp /etc/postfix/certs/scrollout.cert /usr/share/ca-certificates/)
-[[ -f /etc/postfix/certs/scrollout-dsa.cert ]] || (openssl req -new -newkey dsa:<(openssl dsaparam 4096) -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -keyout /etc/postfix/certs/scrollout-dsa.key  -out /etc/postfix/certs/scrollout-dsa.cert && cp /etc/postfix/certs/scrollout-dsa.cert /usr/share/ca-certificates/)
-[[ -f /etc/postfix/certs/scrollout-ecdsa.cert ]] || (openssl req -new -sha384 -newkey ec:<(openssl ecparam -name secp384r1) -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -keyout /etc/postfix/certs/scrollout-ecdsa.key  -out /etc/postfix/certs/scrollout-ecdsa.cert && cp /etc/postfix/certs/scrollout-ecdsa.cert /usr/share/ca-certificates/)
+[[ -f /etc/dovecot/private/dovecot.pem ]] || openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "$certid" -out /etc/dovecot/dovecot.pem -keyout /etc/dovecot/private/dovecot.pem
+[[ -f /etc/dovecot/dovecot.pem ]] || openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "$certid" -out /etc/dovecot/dovecot.pem -keyout /etc/dovecot/private/dovecot.pem
+[[ -f /etc/postfix/certs/scrollout.cert ]] || (openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "$certid" -keyout /etc/postfix/certs/scrollout.key  -out /etc/postfix/certs/scrollout.cert  && cp /etc/postfix/certs/scrollout.cert /usr/share/ca-certificates/)
+[[ -f /etc/postfix/certs/scrollout-dsa.cert ]] || (openssl req -new -newkey dsa:<(openssl dsaparam 4096) -days 1000 -nodes -x509 -subj "$certid" -keyout /etc/postfix/certs/scrollout-dsa.key  -out /etc/postfix/certs/scrollout-dsa.cert && cp /etc/postfix/certs/scrollout-dsa.cert /usr/share/ca-certificates/)
+[[ -f /etc/postfix/certs/scrollout-ecdsa.cert ]] || (openssl req -new -sha384 -newkey ec:<(openssl ecparam -name secp384r1) -days 1000 -nodes -x509 -subj "$certid" -keyout /etc/postfix/certs/scrollout-ecdsa.key  -out /etc/postfix/certs/scrollout-ecdsa.cert && cp /etc/postfix/certs/scrollout-ecdsa.cert /usr/share/ca-certificates/)
 test -f /etc/postfix/certs/dh_512.pem || openssl dhparam -out /etc/postfix/certs/dh_512.pem 512
 test -f /etc/postfix/certs/dh_1024.pem || openssl dhparam -out /etc/postfix/certs/dh_1024.pem 1024
 test -f /etc/postfix/certs/dh_2048.pem || openssl dhparam -out /etc/postfix/certs/dh_2048.pem 2048
@@ -397,21 +402,21 @@ printf "User_Alias WWW = www-data\nCmnd_Alias SO = /sbin/ip, /usr/bin/awk, /sbin
 chmod 0440 /etc/sudoers;
 
 if grep -q "Debian GNU/Linux 7" /etc/issue; then
-        test -f /etc/apt/sources.list.d/wheezy-backports.list || echo 'deb http://http.debian.net/debian wheezy-backports main' > /etc/apt/sources.list.d/wheezy-backports.list
-        apt-get update
-        sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t wheezy-backports
+    test -f /etc/apt/sources.list.d/wheezy-backports.list || echo 'deb http://http.debian.net/debian wheezy-backports main' > /etc/apt/sources.list.d/wheezy-backports.list
+    apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t wheezy-backports
 fi
 
 if grep -q "Debian GNU/Linux 8" /etc/issue; then
-        test -f /etc/apt/sources.list.d/jessie-backports.list || echo 'deb http://http.debian.net/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
-        apt-get update
-        sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t jessie-backports
+    test -f /etc/apt/sources.list.d/jessie-backports.list || echo 'deb http://http.debian.net/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
+    apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t jessie-backports
 fi
 
 if grep -q "Debian GNU/Linux 9" /etc/issue; then
-        test -f /etc/apt/sources.list.d/stretch-backports.list || echo 'deb http://http.debian.net/debian stretch-backports main' > /etc/apt/sources.list.d/stretch-backports.list
-        apt-get update
-        sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t stretch-backports
+    test -f /etc/apt/sources.list.d/stretch-backports.list || echo 'deb http://http.debian.net/debian stretch-backports main' > /etc/apt/sources.list.d/stretch-backports.list
+    apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" postfix spamassassin amavisd-new clamav-daemon clamav-freshclam getmail4 fail2ban dovecot-common postfix-pcre postfix-ldap -t stretch-backports
 fi
 
 postconf -d | grep "^mail_version = 2.[8-9].[0-9]$" && apt-get autoremove postgrey -y
@@ -475,7 +480,7 @@ fi
 # rm /var/lib/postgrey/postgrey.lock
 # /etc/init.d/postgrey start
 
-localip=`ifconfig | grep -m1 "inet .* Bcast.* Mask" | sed "s/.*addr:\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\) *B.*/\1/"`;
+localip=`env LANG=C ifconfig | grep -m1 "inet .* Bcast.* Mask" | sed "s/.*addr:\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\) *B.*/\1/"`;
 /etc/init.d/incron restart
 # sed -i -e "s/rotate [1-9]\{1\}$/rotate 52\n\tsize 10M/" /etc/logrotate.d/rsyslog
 clear;
@@ -487,12 +492,48 @@ printf "\nSupport & feedback: marius.gologan@gmail.com\n"
 }
 
 
+# flag
+fqdnn=""
+
+### Tests for correct hostname & domain name configuration, if we don't check for a
+### correct name and domain configuration here you will get a masked error on the
+### install process and you will get a unstable system at the end.
+if [[ "$(hostname -d)" == ""  ]]; then
+    # blank domain set
+    fqdnn="Y"
+fi
+if [[ "$(hostname -f)" == "$(hostname)"  ]]; then
+    # bad "by hand" hostname configuration
+    fqdnn="Y"
+fi
+
+if [[ "$fqdnn" == "Y" ]]; then
 clear;
 printf "\n\
-\n\n--------------------------------------   WARNING! -----------------------------------------\n\
-In case you have an web or email server installed on this computer DO NOT CONTINUE (Press 2)\n\
-Make sure this computer is an Ubuntu or Debian fresh install. Do you wish to continue?\n\
--------------------------------------------------------------------------------------------\n"
+\n\n--------------------------------  WARNING! ------------------------------------\n\
+You have a bad naming convention on this server, than can lead to a unstable\n\
+system configuration at the end of the install process.\n\
+\n\
+Your FQDN is: $(hostname -f)\n\
+It should be like: name.domain.com
+\n\
+Please fix that before beginning the install process, thanks.\n\
+-------------------------------------------------------------------------------\n"
+
+exit 0;
+fi
+
+clear;
+printf "\n\
+\n\n-------------------------------- WARNING! -------------------------------------\n\
+In case you have an web or email server installed on this computer DO NOT \n\
+CONTINUE WITH THE INSTALL PROCESS (Press 2)\n\
+\n\
+Make sure this computer is an Ubuntu or Debian fresh install.
+\n\
+Do you wish to continue?\n\
+-------------------------------------------------------------------------------\n"
+
 select yn in "Yes" "No"; do
         case $yn in
                 Yes ) f_install && exit 0;;

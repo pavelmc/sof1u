@@ -4,6 +4,7 @@
 # Modified by Pavel Milanes (pavel.mc@gmail.com) to work with modern OS versions #
 # Main changes are issues with (so far)
 #  - PHP5 not being available on Ubuntu xenial: using PHP7
+#  - hostname fix for the certificate generation
 ##################################################################################
 
 # Detecting old/actual OS versions to deal with
@@ -365,14 +366,17 @@ cp /var/www/cfg/quagga_zebra.conf /etc/quagga/zebra.conf
 passw=`tr -cd "a-zA-Z0-9\-=_" < /dev/urandom | fold -w35 | head -n1`
 sed -i "s/password .*/password ${passw}/g" /etc/quagga/*.conf
 
+# build the certificate ident string
+certid="/O=$(hostname -d | cut -d '.' -f 1)/CN=$(hostname -f)"
+
 /etc/init.d/postfix stop
 test -d /etc/postfix/certs || mkdir /etc/postfix/certs;
 test -d /etc/dovecot/private || mkdir /etc/dovecot/private
-[[ -f /etc/dovecot/private/dovecot.pem ]] || openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -out /etc/dovecot/dovecot.pem -keyout /etc/dovecot/private/dovecot.pem
-[[ -f /etc/dovecot/dovecot.pem ]] || openssl req -new -sha384 -newkey ec:<(openssl ecparam -name secp384r1) -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -out /etc/dovecot/dovecot.pem -keyout /etc/dovecot/private/dovecot.pem
-[[ -f /etc/postfix/certs/scrollout.cert ]] || (openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -keyout /etc/postfix/certs/scrollout.key  -out /etc/postfix/certs/scrollout.cert && cp /etc/postfix/certs/scrollout.cert /usr/share/ca-certificates/)
-[[ -f /etc/postfix/certs/scrollout-dsa.cert ]] || (openssl req -new -newkey dsa:<(openssl dsaparam 4096) -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -keyout /etc/postfix/certs/scrollout-dsa.key  -out /etc/postfix/certs/scrollout-dsa.cert && cp /etc/postfix/certs/scrollout-dsa.cert /usr/share/ca-certificates/)
-[[ -f /etc/postfix/certs/scrollout-ecdsa.cert ]] || (openssl req -new -sha384 -newkey ec:<(openssl ecparam -name secp384r1) -days 1000 -nodes -x509 -subj "/O=${organization[*]}/CN=$hostname.$domain" -keyout /etc/postfix/certs/scrollout-ecdsa.key  -out /etc/postfix/certs/scrollout-ecdsa.cert && cp /etc/postfix/certs/scrollout-ecdsa.cert /usr/share/ca-certificates/)
+[[ -f /etc/dovecot/private/dovecot.pem ]] || openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "$certid" -out /etc/dovecot/dovecot.pem -keyout /etc/dovecot/private/dovecot.pem
+[[ -f /etc/dovecot/dovecot.pem ]] || openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "$certid" -out /etc/dovecot/dovecot.pem -keyout /etc/dovecot/private/dovecot.pem
+[[ -f /etc/postfix/certs/scrollout.cert ]] || (openssl req -new -sha384 -newkey rsa:4096 -days 1000 -nodes -x509 -subj "$certid" -keyout /etc/postfix/certs/scrollout.key  -out /etc/postfix/certs/scrollout.cert  && cp /etc/postfix/certs/scrollout.cert /usr/share/ca-certificates/)
+[[ -f /etc/postfix/certs/scrollout-dsa.cert ]] || (openssl req -new -newkey dsa:<(openssl dsaparam 4096) -days 1000 -nodes -x509 -subj "$certid" -keyout /etc/postfix/certs/scrollout-dsa.key  -out /etc/postfix/certs/scrollout-dsa.cert && cp /etc/postfix/certs/scrollout-dsa.cert /usr/share/ca-certificates/)
+[[ -f /etc/postfix/certs/scrollout-ecdsa.cert ]] || (openssl req -new -sha384 -newkey ec:<(openssl ecparam -name secp384r1) -days 1000 -nodes -x509 -subj "$certid" -keyout /etc/postfix/certs/scrollout-ecdsa.key  -out /etc/postfix/certs/scrollout-ecdsa.cert && cp /etc/postfix/certs/scrollout-ecdsa.cert /usr/share/ca-certificates/)
 # [[ `find /etc/postfix/certs/dh_512.pem -mmin +43200` ]] && openssl dhparam -out /etc/postfix/certs/dh_512.pem 512
 # [[ `find /etc/postfix/certs/dh_1024.pem -mmin +43200` ]] && openssl dhparam -out /etc/postfix/certs/dh_1024.pem 1024
 # [[ `find /etc/postfix/certs/dh_2048.pem -mmin +43200` ]] && openssl dhparam -out /etc/postfix/certs/dh_2048.pem 2048
